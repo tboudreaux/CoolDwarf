@@ -1,0 +1,64 @@
+[build-system]
+requires = ["numpy", "setuptools", "setuptools-scm", "wheel", "scikit-build", "cmake", "pybind11"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="CoolDwarf"
+authors = [
+	{name = "Emily M. Boudreaux", email="emily@boudreauxmail.com"},
+	]
+description="Brown Dwarf Dynamic Cooling Model"
+readme="README.md"
+requires-python = ">=3.9"
+keywords=["Globular Cluster"]
+license = { file = "LICENSE" }
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Science/Research",
+	"License :: OSI Approved :: MIT License",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3",
+	]
+dependencies = [
+	"matplotlib",
+	"numpy",
+	"scipy",
+	"tqdm",
+	"pandas",
+	"pybind11",
+	]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/tboudreaux/CoolDwarf"
+
+[tool.black]
+line-length = 88  # Specify the line length
+target-version = ['py39', 'py310', 'py311']  # Specify your Python version
+include = '\.pyi?$'
+exclude = '''  # Specify the files/dirs that should be ignored by the black formatter
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.6.0a1"
+version_files = [
+    "pyproject.toml:version",
+    "src/CoolDwarf/__init__.py",
+    "CITATION.cff"
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "CoolDwarf.__version__"}
