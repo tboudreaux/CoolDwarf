@@ -1,1 +1,1 @@
-from .star import VoxelSphere
+from .sphere import VoxelSphere

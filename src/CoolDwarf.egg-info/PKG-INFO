@@ -1,0 +1,58 @@
+Metadata-Version: 2.1
+Name: CoolDwarf
+Version: 0.0.0
+Summary: Brown Dwarf Dynamic Cooling Model
+Author-email: "Emily M. Boudreaux" <emily@boudreauxmail.com>
+License: Copyright 2024 Emily M. Boudreaux
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy of
+        this software and associated documentation files (the “Software”), to deal in
+        the Software without restriction, including without limitation the rights to
+        use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+        of the Software, and to permit persons to whom the Software is furnished to do
+        so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+        
+Project-URL: Homepage, https://github.com/tboudreaux/CoolDwarf
+Keywords: Globular Cluster
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: tqdm
+Requires-Dist: pandas
+Requires-Dist: pybind11
+
+# CoolDwarf
+
+CoolDwarf is a dynamic brown dwarf cooling model meant to cover short time scales with high accuracy. That is to say 
+that CoolDwarf is not meant to trace cooling over gigayear, megayear, or even kiloyear timescales; rather, CoolDwarf is meant
+to trace cooling over minutes, hours, days, and year timescales. 
+
+The original reason for this project was to model the surface temperature profile of a brown dwarf + Mdwarf binary where
+the M dwarf exhibits a high degree of XRay flux (from flares).
+
+
+## CoolDwarf is still *very* early in its development and should not be taken as a scientificly useful software yet!
+
+Development is ongoing and I hope to have a realease within the next 6 months. 
+
+

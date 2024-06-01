@@ -1,1 +1,1 @@
-from .const import COST
+from .const import CONST

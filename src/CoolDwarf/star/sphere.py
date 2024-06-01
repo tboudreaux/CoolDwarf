@@ -3,15 +3,15 @@ import pandas as pd
 from scipy.interpolate import interp1d
 
 from CoolDwarf.utils.math import make_3d_kernels
+from CoolDwarf.utils.math import partial_derivative_x
 from CoolDwarf.utils.const import CONST as CoolDwarfCONST
+from CoolDwarf.utils.format import pretty_print_3d_array
 
 from CoolDwarf.model import get_model
 
-from CoolDwarf.utils.math import partial_derivative_x
-from CoolDwarf.utils.format import pretty_print_3d_array
 
 class VoxelSphere:
-    CONST = CoolDwarfConst
+    CONST = CoolDwarfCONST
     CACHE = {}
     _3DDiffKernels = make_3d_kernels()
 
