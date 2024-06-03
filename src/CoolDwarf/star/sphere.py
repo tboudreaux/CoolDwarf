@@ -90,41 +90,30 @@ class VoxelSphere:
         self.r = np.linspace(0, self.radius, self.radialResolution)
         self.theta = np.linspace(0, 2*np.pi, self.azimuthalResolition)
         self.phi = np.linspace(0, np.pi, self.altitudinalResolition)
+
+        self._dr = self.r[1] - self.r[0]
+        self._dtheta = self.theta[1] - self.theta[0]
+        self._dphi = self.phi[1] - self.phi[0]
         
         self.R, self.THETA, self.PHI = np.meshgrid(self.r, self.theta, self.phi, indexing='ij')
 
         self._temperatureGrid = self._temperaturef(self.R)
         self._densityGrid = self._densityf(self.R)
-        
+        self._volumneGrid = abs(self.R**2 * np.sin(self.THETA)* self._dr * self._dtheta * self._dphi)
+        self._differentialMassGrid = self._volumneGrid * self._densityGrid
+
         self._massGrid = self.enclosed_mass(self.R)
+        self._forward_EOS()
 
-        self._pressureGrid = np.zeros_like(self.R)
-        self._energyGrid = np.zeros_like(self.R)
-        self._fill_pressure_energy_grid()
-
-
-    def _fill_pressure_energy_grid(self):
-        gridShape = self.R.shape
-        for i in range(gridShape[0]):
-            for j in range(gridShape[1]):
-                for k in range(gridShape[2]):
-                    log_temperature = np.log10(self._temperatureGrid[i, j, k])
-                    log_density = np.log10(self._densityGrid[i, j, k])
-                    self._pressureGrid[i, j, k] = self._eos(log_temperature, log_density, target="pressure")
-                    self._energyGrid[i, j, k] = self._eos(log_temperature, log_density, target="U")
+    def _forward_EOS(self):
+        logT = np.log10(self._temperatureGrid)
+        logRho = np.log10(self._densityGrid)
+        self._pressureGrid = 1e10 * self._eos.pressure(logT, logRho)
+        self._energyGrid = 1e13 * ((self._differentialMassGrid/1000) * self._eos.energy(logT, logRho))
 
     def Cp(self, delta_t = 1e-5):
         u1 = self._energyGrid
-        
-        # Small temperature increment for numerical derivative
-        gridShape = self.R.shape
-        u2 = np.zeros_like(u1)
-        for i in range(gridShape[0]):
-            for j in range(gridShape[1]):
-                for k in range(gridShape[2]):
-                    log_temperature = np.log10(self._temperatureGrid[i, j, k])
-                    log_density = np.log10(self._densityGrid[i, j, k])
-                    u2[i, j, k] = self._eos(log_temperature + delta_t, log_density, target="U")
+        u2 = 1e13 * ((self._differentialMassGrid/1000) * self._eos.energy(np.log10(self._temperatureGrid + delta_t), np.log10(self._densityGrid)))
         
         cp = (u2 - u1) / delta_t
         cp_specific = cp / self._effectiveMolarMass
@@ -185,8 +174,29 @@ class VoxelSphere:
         delFConvTheta = partial_derivative_x(flux[0][1], dTheta)
         delFConvPhi = partial_derivative_x(flux[0][2], dPhi)
         delFRadR = partial_derivative_x(flux[1][0], dR)
-        delFRadThta = partial_derivative_x(flux[1][1], dTheta)
+        delFRadTheta = partial_derivative_x(flux[1][1], dTheta)
         delFRadPhi = partial_derivative_x(flux[1][2], dPhi)
+        return ((delFConvR, delFConvTheta, delFConvPhi), (delFRadR, delFRadTheta, delFRadPhi))
+
+    @property
+    def dEdt(self):
+        fluxDivergence = self.flux_divergence
+        dEConvdt = -fluxDivergence[0][0] - fluxDivergence[0][1] - fluxDivergence[0][2]
+        dERadt = -fluxDivergence[1][0] - fluxDivergence[1][1] - fluxDivergence[1][2]
+        DEDT = dEConvt + dERadt
+        return DEDT
+
+    def _update_energy(self, dt):
+        dE = - self.dEdt * dt
+        self._energyGrid += dE
+
+    def timestep(self, dt):
+        self._evolutionarySteps += 1
+        self._update_energy(dt)
+        self._update_temperature()
+        self._update_pressure()
+        self._update_density()
+
 
     @property
     def convective_overturn_timescale(self):
