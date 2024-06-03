@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import itertools
 
 def plot_3d_gradients(grid_points, gradients, radius, sphere_radius=1, cell=False):
     x, y, z = grid_points

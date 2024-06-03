@@ -53,7 +53,7 @@ exclude = '''  # Specify the files/dirs that should be ignored by the black form
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.6.0a1"
+version = "0.6.0"
 version_files = [
     "pyproject.toml:version",
     "src/CoolDwarf/__init__.py",

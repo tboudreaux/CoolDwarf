@@ -1,6 +1,6 @@
 from CoolDwarf.EOS.ChabrierDebras2021.EOS import CH21EOS
 
-from CoolDwarf.err import EOSFormattError
+from CoolDwarf.err import EOSFormatError
 
 def get_eos(path: str, format: str):
     formats = {
@@ -9,6 +9,6 @@ def get_eos(path: str, format: str):
 
     EOSBuilder = formats.get(format, None)
     if not EOSBuilder:
-        raise EOSFormatError(f"{format} is not a defined EOS format. Those are {formats.keys()}")
+        raise EOSFormatError(format,formats.keys())
 
     return EOSBuilder(path)

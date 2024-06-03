@@ -2,11 +2,12 @@ import re
 import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
+from io import StringIO
 
-from CoolDwarf.utils import linear_interpolate_dataframes
+from CoolDwarf.utils.interp import linear_interpolate_dataframes
 
 
-class EOS:
+class CH21EOS:
     def __init__(self, tablePath):
         self._tablePath = tablePath
         self.parse_table()
