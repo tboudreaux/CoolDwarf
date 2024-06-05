@@ -1,11 +1,14 @@
 import numpy as np
 import pandas as pd
+import itertools
 from scipy.interpolate import interp1d
 
 from CoolDwarf.utils.math import make_3d_kernels
 from CoolDwarf.utils.math import partial_derivative_x
 from CoolDwarf.utils.const import CONST as CoolDwarfCONST
 from CoolDwarf.utils.format import pretty_print_3d_array
+
+from CoolDwarf.EOS import Inverter
 
 from CoolDwarf.model import get_model
 
@@ -56,6 +59,8 @@ class VoxelSphere:
         self._temperaturef = interp1d(np.exp(self._1D_structure.lnR.values), np.exp(self._1D_structure.lnT.values), bounds_error=False, fill_value=np.exp(self._1D_structure.lnT.values.max()))
 
         self._eos = EOS
+        self._ieos = Inverter(self._eos, self._eos.TRange, self._eos.rhoRange)
+
         self._create_voxel_sphere()
         
         self._evolutionarySteps = 0
@@ -110,6 +115,41 @@ class VoxelSphere:
         logRho = np.log10(self._densityGrid)
         self._pressureGrid = 1e10 * self._eos.pressure(logT, logRho)
         self._energyGrid = 1e13 * ((self._differentialMassGrid/1000) * self._eos.energy(logT, logRho))
+
+    def _make_TD_search_grid(self):
+        f = 0.01
+        fT = f * self._temperatureGrid
+        fD = f * self._densityGrid
+        lowerTRange = np.log10(self._temperatureGrid - fT)
+        upperTRange = np.log10(self._temperatureGrid + fT)
+        lowerDRange = np.log10(self._densityGrid - fD)
+        upperDRange = np.log10(self._densityGrid + fD)
+        return ((lowerTRange, upperTRange), (lowerDRange, upperDRange))
+
+    def _reverse_EOS(self):
+        specificInternalEnergy = (1000 * self._energyGrid)/(1e13 * self._differentialMassGrid)
+        initT = np.log10(self._temperatureGrid)
+        initRho = np.log10(self._densityGrid)
+        tRange, dRange = self._make_TD_search_grid()
+
+        # TODO: vectorize this 
+        newTempGrid = np.zeros_like(self._temperatureGrid)
+        newDensityGrid = np.zeros_like(self._densityGrid)
+        for i, j, k in itertools.product(*list(map(lambda x: range(x), self._temperatureGrid.shape))):
+            U = specificInternalEnergy[i, j, k]
+            if np.isnan(U):
+                newTempGrid[i, j, k] = np.nan
+                newDensityGrid[i, j, k] = np.nan
+            else:
+                T = initT[i, j, k]
+                R = initRho[i, j, k]
+                self._ieos.set_bounds((Trange, Rrange))
+                r = self._ieos.temperature_density(U, T, R)
+                newTempGrid[i, j, k] = r[0]
+                newDensityGrid[i, j, k] = r[1]
+        self._temperatureGrid = newTempGrid
+        self._densityGrid = newDensityGrid
+        self._pressureGrid = 1e10 * self._eos.pressure(np.log10(self._temperatureGrid), np.log10(self._densityGrid))
 
     def Cp(self, delta_t = 1e-5):
         u1 = self._energyGrid
@@ -196,7 +236,6 @@ class VoxelSphere:
         self._update_temperature()
         self._update_pressure()
         self._update_density()
-
 
     @property
     def convective_overturn_timescale(self):
