@@ -12,4 +12,16 @@ the M dwarf exhibits a high degree of XRay flux (from flares).
 
 Development is ongoing and I hope to have a realease within the next 6 months. 
 
+## Installation
+If you with to install CoolDwarf for testing or development I reccomend using virtual enviroment and installing
+using pip
+
+```bash
+git clone https://github.com/tboudreaux/CoolDwarf
+cd CoolDwarf
+pip install . -e 
+```
+
+## Documentation
+The documentation for CoolDwarf may be found <a href="https://algebrist.ddns.net/~tboudreaux/docs/CoolDwarf/index.html">here</a>
 
