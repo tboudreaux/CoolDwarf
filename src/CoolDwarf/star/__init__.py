@@ -1,1 +1,1 @@
-from .sphere import VoxelSphere
+from .sphere import VoxelSphere, default_tol
