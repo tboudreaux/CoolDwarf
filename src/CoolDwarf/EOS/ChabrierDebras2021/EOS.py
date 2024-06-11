@@ -12,7 +12,7 @@ Dependencies
 - numpy
 - pandas
 - scipy
-- CoolDwarf.utils.interp
+- cupy
 
 Example usage
 -------------
@@ -23,12 +23,12 @@ Example usage
 """
 import re
 import pandas as pd
-import numpy as np
-from scipy.interpolate import interp1d, RegularGridInterpolator
 from io import StringIO
+from cupyx.scipy.interpolate import RegularGridInterpolator
 import logging
 
-from CoolDwarf.utils.interp import linear_interpolate_dataframes
+import cupy as cp
+import torch
 
 
 class CH21EOS:
@@ -115,8 +115,8 @@ class CH21EOS:
             table = match.groups()[2]
             df = pd.read_fwf(StringIO(table), colspec='infer', names=columns)
             self._EOSTabs.append(df.values)
-        self._temps = np.array(self._temps)
-        self._EOSTabs = np.array(self._EOSTabs)
+        self._temps = cp.array(self._temps)
+        self._EOSTabs = cp.array(self._EOSTabs)
         self._rhos = self._EOSTabs[0, :, 2]
         self._logger.info(f"Found EOS Tab array of shape {self._EOSTabs.shape}")
         self._logger.debug(f"Found Temps array of shape {self._temps.shape}")
@@ -163,6 +163,8 @@ class CH21EOS:
         logRho : float
             Log10 of the density in g/cm^3
         """
+        logT = cp.array(logT)
+        logRho = cp.array(logRho)
         self.check_forward_params(logT, logRho)
         return 10**self._forward_pressure((logT, logRho))
 
@@ -177,8 +179,27 @@ class CH21EOS:
         logRho : float
             Log10 of the density in g/cm^3
         """
+        logT = cp.array(logT)
+        logRho = cp.array(logRho)
         self.check_forward_params(logT, logRho)
         return 10**self._forward_energy((logT, logRho))
+
+    def energy_torch(self, logT, logRho):
+        """
+        Find the energy at the given temperature and density using PyTorch tensors.
+
+        Parameters
+        ----------
+        logT : torch.Tensor
+            Log10 of the temperature in K
+        logRho : torch.Tensor
+            Log10 of the density in g/cm^3
+        """
+        logT_cp = cp.array(logT.cpu().detach().numpy())
+        logRho_cp = cp.array(logRho.cpu().detach().numpy())
+        self.check_forward_params(logT_cp, logRho_cp)
+        energy_cp = self._forward_energy((logT_cp, logRho_cp))
+        return torch.tensor(10**energy_cp, device=logT.device)
 
     @property
     def TRange(self):
