@@ -11,6 +11,26 @@ Example usage
 import logging
 import logging.config
 
+# Define a log level for evolutionary steps
+EVOLVE_LEVEL = 43
+logging.addLevelName(EVOLVE_LEVEL, "EVOLVE")
+
+def evolve_log(self, message, *args, **kwargs):
+    if self.isEnabledFor(EVOLVE_LEVEL):
+        self._log(EVOLVE_LEVEL, message, args, **kwargs)
+
+logging.Logger.evolve = evolve_log
+
+# Custom filter to include only logs with level 43
+class CustomFilter(logging.Filter):
+    def filter(self, record):
+        return record.levelno == EVOLVE_LEVEL
+
+# Custom filter to exclude logs with level 43
+class ExcludeCustomFilter(logging.Filter):
+    def filter(self, record):
+        return record.levelno != EVOLVE_LEVEL
+
 def setup_logging(debug: bool = False):
     """
     This function is used to set up the logging configuration for CoolDwarf.
@@ -24,6 +44,7 @@ def setup_logging(debug: bool = False):
         ll = "DEBUG"
     else:
         ll = "INFO"
+
     logging_config = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -39,24 +60,41 @@ def setup_logging(debug: bool = False):
                 'formatter': 'standard',
                 'stream': 'ext://sys.stdout',
             },
-            'file': {
+            'file_all_except_custom': {
                 'class': 'logging.FileHandler',
                 'level': f'{ll}',
                 'formatter': 'standard',
                 'filename': 'CoolDwarf.log',
+                'filters': ['exclude_custom'],
+            },
+            'file_custom': {
+                'class': 'logging.FileHandler',
+                'level': 'EVOLVE',
+                'formatter': 'standard',
+                'filename': 'CoolDwarf.evolve',
+                'filters': ['custom_only'],
+            },
+        },
+        'filters': {
+            'custom_only': {
+                '()': CustomFilter,
+            },
+            'exclude_custom': {
+                '()': ExcludeCustomFilter,
             },
         },
         'loggers': {
             'my_module': {
                 'level': 'DEBUG',
-                'handlers': ['console', 'file'],
+                'handlers': ['console', 'file_all_except_custom', 'file_custom'],
                 'propagate': False,
             },
         },
         'root': {
             'level': 'DEBUG',
-            'handlers': ['console', 'file'],
+            'handlers': ['console', 'file_all_except_custom', 'file_custom'],
         },
     }
-    
+
     logging.config.dictConfig(logging_config)
+    
