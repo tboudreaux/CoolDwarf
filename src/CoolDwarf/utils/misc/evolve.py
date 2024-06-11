@@ -1,1 +1,1 @@
-raise NotImplimentedError()
+raise NotImplementedError()

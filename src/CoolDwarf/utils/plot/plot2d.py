@@ -17,7 +17,10 @@ def visualize_scalar_field(scalar_field, slice_axis='z', slice_index=None, **kwa
         slice_data = scalar_field[:, :, slice_index]
         xlabel, ylabel = r'$r$', r'$\theta$'
 
-    fig, ax = plt.subplots(**kwargs, subplot_kw={'projection': 'polar'})
+    if slice_axis != 'i':
+        fig, ax = plt.subplots(**kwargs, subplot_kw={'projection': 'polar'})
+    else:
+        fig, ax = plt.subplots(**kwargs)
     img = ax.imshow(slice_data, origin='lower', cmap='viridis', aspect='auto')
     plt.colorbar(img, label='Scalar Field Value')
     ax.set_xlabel(xlabel)
