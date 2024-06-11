@@ -23,5 +23,5 @@ pip install . -e
 ```
 
 ## Documentation
-The documentation for CoolDwarf may be found <a href="https://algebrist.ddns.net/~tboudreaux/docs/CoolDwarf/index.html">here</a>
+The documentation for CoolDwarf may be found <a href="https://tboudreaux.github.io/CoolDwarf/">here</a>
 
