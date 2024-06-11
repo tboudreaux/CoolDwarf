@@ -59,17 +59,14 @@ Example Usage
     >>> print(f"Surface Temp: {sphere.surface_temperature_profile}")
 """
 import numpy as np
-import pandas as pd
 import itertools
 from scipy.interpolate import interp1d
 import logging
 
 from typing import Tuple
 
-from CoolDwarf.utils.math import make_3d_kernels
 from CoolDwarf.utils.math import partial_derivative_x
 from CoolDwarf.utils.const import CONST as CoolDwarfCONST
-from CoolDwarf.utils.format import pretty_print_3d_array
 
 from CoolDwarf.EOS import Inverter
 from CoolDwarf.model import get_model
