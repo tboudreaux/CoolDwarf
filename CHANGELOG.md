@@ -1,3 +1,17 @@
+## 0.8.0 (2024-06-11)
+
+### Feat
+
+- **sphere.py**: reverse EOS implimented
+
+### Fix
+
+- **star/sphere.py**: added docstrings and fixed phi axis
+
+### Refactor
+
+- **plot2d.py**: plot2d uses spherical coordinates now
+
 ## 0.7.0 (2024-06-04)
 
 ### Feat
