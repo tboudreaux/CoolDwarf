@@ -51,6 +51,55 @@
 </pre></div>
 </div>
 </section>
+<dl class="py class">
+<dt class="sig sig-object py" id="CoolDwarf.utils.misc.logging.CustomFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.misc.logging.</span></span><span class="sig-name descname"><span class="pre">CustomFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.misc.logging.CustomFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Filter</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#CoolDwarf.utils.misc.logging.CustomFilter.filter" title="CoolDwarf.utils.misc.logging.CustomFilter.filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter</span></code></a>(record)</p></td>
+<td><p>Determine if the specified record is to be logged.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="CoolDwarf.utils.misc.logging.CustomFilter.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.misc.logging.CustomFilter.filter" title="Link to this definition">¶</a></dt>
+<dd><p>Determine if the specified record is to be logged.</p>
+<p>Returns True if the record should be logged, or False otherwise.
+If deemed appropriate, the record may be modified in-place.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="CoolDwarf.utils.misc.logging.ExcludeCustomFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.misc.logging.</span></span><span class="sig-name descname"><span class="pre">ExcludeCustomFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.misc.logging.ExcludeCustomFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Filter</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#CoolDwarf.utils.misc.logging.ExcludeCustomFilter.filter" title="CoolDwarf.utils.misc.logging.ExcludeCustomFilter.filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter</span></code></a>(record)</p></td>
+<td><p>Determine if the specified record is to be logged.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="CoolDwarf.utils.misc.logging.ExcludeCustomFilter.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.misc.logging.ExcludeCustomFilter.filter" title="Link to this definition">¶</a></dt>
+<dd><p>Determine if the specified record is to be logged.</p>
+<p>Returns True if the record should be logged, or False otherwise.
+If deemed appropriate, the record may be modified in-place.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.misc.logging.evolve_log">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.misc.logging.</span></span><span class="sig-name descname"><span class="pre">evolve_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.misc.logging.evolve_log" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="CoolDwarf.utils.misc.logging.setup_logging">
 <span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.misc.logging.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.misc.logging.setup_logging" title="Link to this definition">¶</a></dt>
@@ -312,21 +361,21 @@
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="CoolDwarf.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.html#module-CoolDwarf">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.ext.html">CoolDwarf.ext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.invert.html">CoolDwarf.EOS.invert</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.html">CoolDwarf.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.dsep.html">CoolDwarf.model.dsep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.mesa.html">CoolDwarf.model.mesa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.html">CoolDwarf.opac</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.aesopus.html">CoolDwarf.opac.aesopus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.interp.html">CoolDwarf.utils.interp</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CoolDwarf.utils.misc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cooldwarf-utils-misc-evolve-module">CoolDwarf.utils.misc.evolve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-CoolDwarf.utils.misc.logging">CoolDwarf.utils.misc.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-CoolDwarf.utils.misc.ndarray">CoolDwarf.utils.misc.ndarray module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-CoolDwarf.utils.misc">Module contents</a></li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">

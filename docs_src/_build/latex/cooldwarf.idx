@@ -1,0 +1,155 @@
+\indexentry{module@\spxentry{module}!CoolDwarf.EOS.ChabrierDebras2021.EOS@\spxentry{CoolDwarf.EOS.ChabrierDebras2021.EOS}|hyperpage}{8}
+\indexentry{CoolDwarf.EOS.ChabrierDebras2021.EOS@\spxentry{CoolDwarf.EOS.ChabrierDebras2021.EOS}!module@\spxentry{module}|hyperpage}{8}
+\indexentry{CH21EOS (class in CoolDwarf.EOS.ChabrierDebras2021.EOS)@\spxentry{CH21EOS}\spxextra{class in CoolDwarf.EOS.ChabrierDebras2021.EOS}|hyperpage}{8}
+\indexentry{TRange (CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS property)@\spxentry{TRange}\spxextra{CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS property}|hyperpage}{9}
+\indexentry{check\_forward\_params() (CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method)@\spxentry{check\_forward\_params()}\spxextra{CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method}|hyperpage}{9}
+\indexentry{energy() (CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method)@\spxentry{energy()}\spxextra{CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method}|hyperpage}{9}
+\indexentry{energy\_torch() (CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method)@\spxentry{energy\_torch()}\spxextra{CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method}|hyperpage}{9}
+\indexentry{parse\_table() (CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method)@\spxentry{parse\_table()}\spxextra{CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method}|hyperpage}{10}
+\indexentry{pressure() (CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method)@\spxentry{pressure()}\spxextra{CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS method}|hyperpage}{10}
+\indexentry{rhoRange (CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS property)@\spxentry{rhoRange}\spxextra{CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS property}|hyperpage}{10}
+\indexentry{module@\spxentry{module}!CoolDwarf.EOS.ChabrierDebras2021@\spxentry{CoolDwarf.EOS.ChabrierDebras2021}|hyperpage}{10}
+\indexentry{CoolDwarf.EOS.ChabrierDebras2021@\spxentry{CoolDwarf.EOS.ChabrierDebras2021}!module@\spxentry{module}|hyperpage}{10}
+\indexentry{module@\spxentry{module}!CoolDwarf.EOS.invert.EOSInverter@\spxentry{CoolDwarf.EOS.invert.EOSInverter}|hyperpage}{10}
+\indexentry{CoolDwarf.EOS.invert.EOSInverter@\spxentry{CoolDwarf.EOS.invert.EOSInverter}!module@\spxentry{module}|hyperpage}{10}
+\indexentry{Inverter (class in CoolDwarf.EOS.invert.EOSInverter)@\spxentry{Inverter}\spxextra{class in CoolDwarf.EOS.invert.EOSInverter}|hyperpage}{11}
+\indexentry{set\_bounds() (CoolDwarf.EOS.invert.EOSInverter.Inverter method)@\spxentry{set\_bounds()}\spxextra{CoolDwarf.EOS.invert.EOSInverter.Inverter method}|hyperpage}{12}
+\indexentry{temperature\_density() (CoolDwarf.EOS.invert.EOSInverter.Inverter method)@\spxentry{temperature\_density()}\spxextra{CoolDwarf.EOS.invert.EOSInverter.Inverter method}|hyperpage}{12}
+\indexentry{cupy\_to\_torch() (in module CoolDwarf.EOS.invert.EOSInverter)@\spxentry{cupy\_to\_torch()}\spxextra{in module CoolDwarf.EOS.invert.EOSInverter}|hyperpage}{12}
+\indexentry{module@\spxentry{module}!CoolDwarf.EOS.invert@\spxentry{CoolDwarf.EOS.invert}|hyperpage}{12}
+\indexentry{CoolDwarf.EOS.invert@\spxentry{CoolDwarf.EOS.invert}!module@\spxentry{module}|hyperpage}{12}
+\indexentry{module@\spxentry{module}!CoolDwarf.EOS.EOS@\spxentry{CoolDwarf.EOS.EOS}|hyperpage}{12}
+\indexentry{CoolDwarf.EOS.EOS@\spxentry{CoolDwarf.EOS.EOS}!module@\spxentry{module}|hyperpage}{12}
+\indexentry{get\_eos() (in module CoolDwarf.EOS.EOS)@\spxentry{get\_eos()}\spxextra{in module CoolDwarf.EOS.EOS}|hyperpage}{12}
+\indexentry{module@\spxentry{module}!CoolDwarf.EOS@\spxentry{CoolDwarf.EOS}|hyperpage}{13}
+\indexentry{CoolDwarf.EOS@\spxentry{CoolDwarf.EOS}!module@\spxentry{module}|hyperpage}{13}
+\indexentry{module@\spxentry{module}!CoolDwarf.err.energy@\spxentry{CoolDwarf.err.energy}|hyperpage}{13}
+\indexentry{CoolDwarf.err.energy@\spxentry{CoolDwarf.err.energy}!module@\spxentry{module}|hyperpage}{13}
+\indexentry{EnergyConservationError@\spxentry{EnergyConservationError}|hyperpage}{13}
+\indexentry{NonConvergenceError@\spxentry{NonConvergenceError}|hyperpage}{13}
+\indexentry{module@\spxentry{module}!CoolDwarf.err.eos@\spxentry{CoolDwarf.err.eos}|hyperpage}{13}
+\indexentry{CoolDwarf.err.eos@\spxentry{CoolDwarf.err.eos}!module@\spxentry{module}|hyperpage}{13}
+\indexentry{EOSBoundsError@\spxentry{EOSBoundsError}|hyperpage}{13}
+\indexentry{EOSFormatError@\spxentry{EOSFormatError}|hyperpage}{13}
+\indexentry{EOSInverterError@\spxentry{EOSInverterError}|hyperpage}{13}
+\indexentry{module@\spxentry{module}!CoolDwarf.err@\spxentry{CoolDwarf.err}|hyperpage}{14}
+\indexentry{CoolDwarf.err@\spxentry{CoolDwarf.err}!module@\spxentry{module}|hyperpage}{14}
+\indexentry{module@\spxentry{module}!CoolDwarf.ext@\spxentry{CoolDwarf.ext}|hyperpage}{14}
+\indexentry{CoolDwarf.ext@\spxentry{CoolDwarf.ext}!module@\spxentry{module}|hyperpage}{14}
+\indexentry{module@\spxentry{module}!CoolDwarf.model.dsep.dsep@\spxentry{CoolDwarf.model.dsep.dsep}|hyperpage}{14}
+\indexentry{CoolDwarf.model.dsep.dsep@\spxentry{CoolDwarf.model.dsep.dsep}!module@\spxentry{module}|hyperpage}{14}
+\indexentry{parse\_dsep\_MOD\_file() (in module CoolDwarf.model.dsep.dsep)@\spxentry{parse\_dsep\_MOD\_file()}\spxextra{in module CoolDwarf.model.dsep.dsep}|hyperpage}{14}
+\indexentry{module@\spxentry{module}!CoolDwarf.model.dsep@\spxentry{CoolDwarf.model.dsep}|hyperpage}{14}
+\indexentry{CoolDwarf.model.dsep@\spxentry{CoolDwarf.model.dsep}!module@\spxentry{module}|hyperpage}{14}
+\indexentry{module@\spxentry{module}!CoolDwarf.model.mesa.mesa@\spxentry{CoolDwarf.model.mesa.mesa}|hyperpage}{14}
+\indexentry{CoolDwarf.model.mesa.mesa@\spxentry{CoolDwarf.model.mesa.mesa}!module@\spxentry{module}|hyperpage}{14}
+\indexentry{parse\_mesa\_MOD\_file() (in module CoolDwarf.model.mesa.mesa)@\spxentry{parse\_mesa\_MOD\_file()}\spxextra{in module CoolDwarf.model.mesa.mesa}|hyperpage}{14}
+\indexentry{module@\spxentry{module}!CoolDwarf.model.mesa@\spxentry{CoolDwarf.model.mesa}|hyperpage}{15}
+\indexentry{CoolDwarf.model.mesa@\spxentry{CoolDwarf.model.mesa}!module@\spxentry{module}|hyperpage}{15}
+\indexentry{module@\spxentry{module}!CoolDwarf.model.model@\spxentry{CoolDwarf.model.model}|hyperpage}{15}
+\indexentry{CoolDwarf.model.model@\spxentry{CoolDwarf.model.model}!module@\spxentry{module}|hyperpage}{15}
+\indexentry{get\_model() (in module CoolDwarf.model.model)@\spxentry{get\_model()}\spxextra{in module CoolDwarf.model.model}|hyperpage}{15}
+\indexentry{module@\spxentry{module}!CoolDwarf.model@\spxentry{CoolDwarf.model}|hyperpage}{16}
+\indexentry{CoolDwarf.model@\spxentry{CoolDwarf.model}!module@\spxentry{module}|hyperpage}{16}
+\indexentry{module@\spxentry{module}!CoolDwarf.opac.aesopus.load@\spxentry{CoolDwarf.opac.aesopus.load}|hyperpage}{16}
+\indexentry{CoolDwarf.opac.aesopus.load@\spxentry{CoolDwarf.opac.aesopus.load}!module@\spxentry{module}|hyperpage}{16}
+\indexentry{load\_lowtempopac() (in module CoolDwarf.opac.aesopus.load)@\spxentry{load\_lowtempopac()}\spxextra{in module CoolDwarf.opac.aesopus.load}|hyperpage}{16}
+\indexentry{module@\spxentry{module}!CoolDwarf.opac.aesopus@\spxentry{CoolDwarf.opac.aesopus}|hyperpage}{16}
+\indexentry{CoolDwarf.opac.aesopus@\spxentry{CoolDwarf.opac.aesopus}!module@\spxentry{module}|hyperpage}{16}
+\indexentry{module@\spxentry{module}!CoolDwarf.opac.kramer@\spxentry{CoolDwarf.opac.kramer}|hyperpage}{16}
+\indexentry{CoolDwarf.opac.kramer@\spxentry{CoolDwarf.opac.kramer}!module@\spxentry{module}|hyperpage}{16}
+\indexentry{KramerOpac (class in CoolDwarf.opac.kramer)@\spxentry{KramerOpac}\spxextra{class in CoolDwarf.opac.kramer}|hyperpage}{16}
+\indexentry{kappa() (CoolDwarf.opac.kramer.KramerOpac method)@\spxentry{kappa()}\spxextra{CoolDwarf.opac.kramer.KramerOpac method}|hyperpage}{17}
+\indexentry{module@\spxentry{module}!CoolDwarf.opac.opacInterp@\spxentry{CoolDwarf.opac.opacInterp}|hyperpage}{17}
+\indexentry{CoolDwarf.opac.opacInterp@\spxentry{CoolDwarf.opac.opacInterp}!module@\spxentry{module}|hyperpage}{17}
+\indexentry{OPACInterp (class in CoolDwarf.opac.opacInterp)@\spxentry{OPACInterp}\spxextra{class in CoolDwarf.opac.opacInterp}|hyperpage}{17}
+\indexentry{kappa() (CoolDwarf.opac.opacInterp.OPACInterp method)@\spxentry{kappa()}\spxextra{CoolDwarf.opac.opacInterp.OPACInterp method}|hyperpage}{17}
+\indexentry{module@\spxentry{module}!CoolDwarf.opac@\spxentry{CoolDwarf.opac}|hyperpage}{17}
+\indexentry{CoolDwarf.opac@\spxentry{CoolDwarf.opac}!module@\spxentry{module}|hyperpage}{17}
+\indexentry{module@\spxentry{module}!CoolDwarf.star.sphere@\spxentry{CoolDwarf.star.sphere}|hyperpage}{17}
+\indexentry{CoolDwarf.star.sphere@\spxentry{CoolDwarf.star.sphere}!module@\spxentry{module}|hyperpage}{17}
+\indexentry{VoxelSphere (class in CoolDwarf.star.sphere)@\spxentry{VoxelSphere}\spxextra{class in CoolDwarf.star.sphere}|hyperpage}{19}
+\indexentry{CONST (CoolDwarf.star.sphere.VoxelSphere attribute)@\spxentry{CONST}\spxextra{CoolDwarf.star.sphere.VoxelSphere attribute}|hyperpage}{20}
+\indexentry{Cp() (CoolDwarf.star.sphere.VoxelSphere method)@\spxentry{Cp()}\spxextra{CoolDwarf.star.sphere.VoxelSphere method}|hyperpage}{20}
+\indexentry{as\_dict() (CoolDwarf.star.sphere.VoxelSphere method)@\spxentry{as\_dict()}\spxextra{CoolDwarf.star.sphere.VoxelSphere method}|hyperpage}{21}
+\indexentry{as\_pandas() (CoolDwarf.star.sphere.VoxelSphere method)@\spxentry{as\_pandas()}\spxextra{CoolDwarf.star.sphere.VoxelSphere method}|hyperpage}{21}
+\indexentry{cfl\_dt (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{cfl\_dt}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{21}
+\indexentry{convective\_energy\_flux (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{convective\_energy\_flux}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{21}
+\indexentry{convective\_overturn\_timescale (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{convective\_overturn\_timescale}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{21}
+\indexentry{convective\_velocity (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{convective\_velocity}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{21}
+\indexentry{dEdt (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{dEdt}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{21}
+\indexentry{density (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{density}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{21}
+\indexentry{enclosed\_mass (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{enclosed\_mass}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{22}
+\indexentry{energy (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{energy}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{22}
+\indexentry{energy\_flux (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{energy\_flux}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{22}
+\indexentry{evolve() (CoolDwarf.star.sphere.VoxelSphere method)@\spxentry{evolve()}\spxextra{CoolDwarf.star.sphere.VoxelSphere method}|hyperpage}{22}
+\indexentry{flux\_divergence (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{flux\_divergence}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{22}
+\indexentry{gradRadEr (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{gradRadEr}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{22}
+\indexentry{gradT (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{gradT}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{22}
+\indexentry{gravitational\_acceleration (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{gravitational\_acceleration}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{23}
+\indexentry{mass (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{mass}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{23}
+\indexentry{mixing\_length (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{mixing\_length}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{23}
+\indexentry{pressure (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{pressure}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{23}
+\indexentry{pressure\_scale\_height (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{pressure\_scale\_height}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{23}
+\indexentry{radiative\_energy\_flux (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{radiative\_energy\_flux}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{23}
+\indexentry{radius (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{radius}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{23}
+\indexentry{save() (CoolDwarf.star.sphere.VoxelSphere method)@\spxentry{save()}\spxextra{CoolDwarf.star.sphere.VoxelSphere method}|hyperpage}{23}
+\indexentry{spherical\_grid\_equal\_volume() (CoolDwarf.star.sphere.VoxelSphere method)@\spxentry{spherical\_grid\_equal\_volume()}\spxextra{CoolDwarf.star.sphere.VoxelSphere method}|hyperpage}{24}
+\indexentry{surface\_temperature\_profile (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{surface\_temperature\_profile}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{24}
+\indexentry{temperature (CoolDwarf.star.sphere.VoxelSphere property)@\spxentry{temperature}\spxextra{CoolDwarf.star.sphere.VoxelSphere property}|hyperpage}{24}
+\indexentry{timestep() (CoolDwarf.star.sphere.VoxelSphere method)@\spxentry{timestep()}\spxextra{CoolDwarf.star.sphere.VoxelSphere method}|hyperpage}{24}
+\indexentry{default\_tol() (in module CoolDwarf.star.sphere)@\spxentry{default\_tol()}\spxextra{in module CoolDwarf.star.sphere}|hyperpage}{25}
+\indexentry{module@\spxentry{module}!CoolDwarf.star@\spxentry{CoolDwarf.star}|hyperpage}{25}
+\indexentry{CoolDwarf.star@\spxentry{CoolDwarf.star}!module@\spxentry{module}|hyperpage}{25}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.const.const@\spxentry{CoolDwarf.utils.const.const}|hyperpage}{25}
+\indexentry{CoolDwarf.utils.const.const@\spxentry{CoolDwarf.utils.const.const}!module@\spxentry{module}|hyperpage}{25}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.const@\spxentry{CoolDwarf.utils.const}|hyperpage}{26}
+\indexentry{CoolDwarf.utils.const@\spxentry{CoolDwarf.utils.const}!module@\spxentry{module}|hyperpage}{26}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.format.format@\spxentry{CoolDwarf.utils.format.format}|hyperpage}{26}
+\indexentry{CoolDwarf.utils.format.format@\spxentry{CoolDwarf.utils.format.format}!module@\spxentry{module}|hyperpage}{26}
+\indexentry{format\_number() (in module CoolDwarf.utils.format.format)@\spxentry{format\_number()}\spxextra{in module CoolDwarf.utils.format.format}|hyperpage}{26}
+\indexentry{pretty\_print\_3d\_array() (in module CoolDwarf.utils.format.format)@\spxentry{pretty\_print\_3d\_array()}\spxextra{in module CoolDwarf.utils.format.format}|hyperpage}{26}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.format@\spxentry{CoolDwarf.utils.format}|hyperpage}{26}
+\indexentry{CoolDwarf.utils.format@\spxentry{CoolDwarf.utils.format}!module@\spxentry{module}|hyperpage}{26}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.interp.interpolate@\spxentry{CoolDwarf.utils.interp.interpolate}|hyperpage}{26}
+\indexentry{CoolDwarf.utils.interp.interpolate@\spxentry{CoolDwarf.utils.interp.interpolate}!module@\spxentry{module}|hyperpage}{26}
+\indexentry{find\_closest\_values() (in module CoolDwarf.utils.interp.interpolate)@\spxentry{find\_closest\_values()}\spxextra{in module CoolDwarf.utils.interp.interpolate}|hyperpage}{26}
+\indexentry{linear\_interpolate\_dataframes() (in module CoolDwarf.utils.interp.interpolate)@\spxentry{linear\_interpolate\_dataframes()}\spxextra{in module CoolDwarf.utils.interp.interpolate}|hyperpage}{26}
+\indexentry{linear\_interpolate\_ndarray() (in module CoolDwarf.utils.interp.interpolate)@\spxentry{linear\_interpolate\_ndarray()}\spxextra{in module CoolDwarf.utils.interp.interpolate}|hyperpage}{26}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.interp@\spxentry{CoolDwarf.utils.interp}|hyperpage}{26}
+\indexentry{CoolDwarf.utils.interp@\spxentry{CoolDwarf.utils.interp}!module@\spxentry{module}|hyperpage}{26}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.math.calc@\spxentry{CoolDwarf.utils.math.calc}|hyperpage}{26}
+\indexentry{CoolDwarf.utils.math.calc@\spxentry{CoolDwarf.utils.math.calc}!module@\spxentry{module}|hyperpage}{26}
+\indexentry{compute\_partial\_derivatives() (in module CoolDwarf.utils.math.calc)@\spxentry{compute\_partial\_derivatives()}\spxextra{in module CoolDwarf.utils.math.calc}|hyperpage}{27}
+\indexentry{partial\_derivative\_x() (in module CoolDwarf.utils.math.calc)@\spxentry{partial\_derivative\_x()}\spxextra{in module CoolDwarf.utils.math.calc}|hyperpage}{27}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.math.kernel@\spxentry{CoolDwarf.utils.math.kernel}|hyperpage}{28}
+\indexentry{CoolDwarf.utils.math.kernel@\spxentry{CoolDwarf.utils.math.kernel}!module@\spxentry{module}|hyperpage}{28}
+\indexentry{make\_3d\_kernels() (in module CoolDwarf.utils.math.kernel)@\spxentry{make\_3d\_kernels()}\spxextra{in module CoolDwarf.utils.math.kernel}|hyperpage}{28}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.math@\spxentry{CoolDwarf.utils.math}|hyperpage}{28}
+\indexentry{CoolDwarf.utils.math@\spxentry{CoolDwarf.utils.math}!module@\spxentry{module}|hyperpage}{28}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.misc.logging@\spxentry{CoolDwarf.utils.misc.logging}|hyperpage}{28}
+\indexentry{CoolDwarf.utils.misc.logging@\spxentry{CoolDwarf.utils.misc.logging}!module@\spxentry{module}|hyperpage}{28}
+\indexentry{CustomFilter (class in CoolDwarf.utils.misc.logging)@\spxentry{CustomFilter}\spxextra{class in CoolDwarf.utils.misc.logging}|hyperpage}{28}
+\indexentry{filter() (CoolDwarf.utils.misc.logging.CustomFilter method)@\spxentry{filter()}\spxextra{CoolDwarf.utils.misc.logging.CustomFilter method}|hyperpage}{28}
+\indexentry{ExcludeCustomFilter (class in CoolDwarf.utils.misc.logging)@\spxentry{ExcludeCustomFilter}\spxextra{class in CoolDwarf.utils.misc.logging}|hyperpage}{28}
+\indexentry{filter() (CoolDwarf.utils.misc.logging.ExcludeCustomFilter method)@\spxentry{filter()}\spxextra{CoolDwarf.utils.misc.logging.ExcludeCustomFilter method}|hyperpage}{29}
+\indexentry{evolve\_log() (in module CoolDwarf.utils.misc.logging)@\spxentry{evolve\_log()}\spxextra{in module CoolDwarf.utils.misc.logging}|hyperpage}{29}
+\indexentry{setup\_logging() (in module CoolDwarf.utils.misc.logging)@\spxentry{setup\_logging()}\spxextra{in module CoolDwarf.utils.misc.logging}|hyperpage}{29}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.misc.ndarray@\spxentry{CoolDwarf.utils.misc.ndarray}|hyperpage}{29}
+\indexentry{CoolDwarf.utils.misc.ndarray@\spxentry{CoolDwarf.utils.misc.ndarray}!module@\spxentry{module}|hyperpage}{29}
+\indexentry{CallbackNDArray (class in CoolDwarf.utils.misc.ndarray)@\spxentry{CallbackNDArray}\spxextra{class in CoolDwarf.utils.misc.ndarray}|hyperpage}{29}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.misc@\spxentry{CoolDwarf.utils.misc}|hyperpage}{32}
+\indexentry{CoolDwarf.utils.misc@\spxentry{CoolDwarf.utils.misc}!module@\spxentry{module}|hyperpage}{32}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.plot.plot2d@\spxentry{CoolDwarf.utils.plot.plot2d}|hyperpage}{32}
+\indexentry{CoolDwarf.utils.plot.plot2d@\spxentry{CoolDwarf.utils.plot.plot2d}!module@\spxentry{module}|hyperpage}{32}
+\indexentry{plot\_polar\_slice() (in module CoolDwarf.utils.plot.plot2d)@\spxentry{plot\_polar\_slice()}\spxextra{in module CoolDwarf.utils.plot.plot2d}|hyperpage}{32}
+\indexentry{visualize\_scalar\_field() (in module CoolDwarf.utils.plot.plot2d)@\spxentry{visualize\_scalar\_field()}\spxextra{in module CoolDwarf.utils.plot.plot2d}|hyperpage}{32}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.plot.plot3d@\spxentry{CoolDwarf.utils.plot.plot3d}|hyperpage}{32}
+\indexentry{CoolDwarf.utils.plot.plot3d@\spxentry{CoolDwarf.utils.plot.plot3d}!module@\spxentry{module}|hyperpage}{32}
+\indexentry{plot\_3d\_gradients() (in module CoolDwarf.utils.plot.plot3d)@\spxentry{plot\_3d\_gradients()}\spxextra{in module CoolDwarf.utils.plot.plot3d}|hyperpage}{32}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils.plot@\spxentry{CoolDwarf.utils.plot}|hyperpage}{32}
+\indexentry{CoolDwarf.utils.plot@\spxentry{CoolDwarf.utils.plot}!module@\spxentry{module}|hyperpage}{32}
+\indexentry{module@\spxentry{module}!CoolDwarf.utils@\spxentry{CoolDwarf.utils}|hyperpage}{32}
+\indexentry{CoolDwarf.utils@\spxentry{CoolDwarf.utils}!module@\spxentry{module}|hyperpage}{32}
+\indexentry{module@\spxentry{module}!CoolDwarf@\spxentry{CoolDwarf}|hyperpage}{32}
+\indexentry{CoolDwarf@\spxentry{CoolDwarf}!module@\spxentry{module}|hyperpage}{32}

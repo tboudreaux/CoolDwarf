@@ -1,0 +1,17 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter C
+  \item \spxentry{CH21EOS}\spxextra{class in CoolDwarf.EOS.ChabrierDebras2021.EOS}, \hyperpage{8}
+  \item \spxentry{CoolDwarf.EOS.ChabrierDebras2021.EOS}
+    \subitem \spxentry{module}, \hyperpage{8}
+
+  \indexspace
+  \bigletter M
+  \item \spxentry{module}
+    \subitem \spxentry{CoolDwarf.EOS.ChabrierDebras2021.EOS}, \hyperpage{8}
+
+\end{sphinxtheindex}

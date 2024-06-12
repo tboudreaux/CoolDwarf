@@ -48,8 +48,8 @@ limited in size by some expected maximum deviation from the initial guess.</p>
 <section id="dependencies">
 <h3>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>numpy</p></li>
-<li><p>scipy</p></li>
+<li><p>cupy</p></li>
+<li><p>torch</p></li>
 <li><p>CoolDwarf.err</p></li>
 </ul>
 </section>
@@ -71,15 +71,14 @@ limited in size by some expected maximum deviation from the initial guess.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.Inverter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.EOS.invert.EOSInverter.</span></span><span class="sig-name descname"><span class="pre">Inverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EOS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TRange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RhoRange</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.EOS.invert.EOSInverter.</span></span><span class="sig-name descname"><span class="pre">Inverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EOS</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Inverter – Inverter class for EOS tables</p>
 <p>This class is designed to be used with the CoolDwarf Stellar Structure code, and provides the necessary functions
-to invert the EOS tables. The Inverter class uses the scipy.optimize.minimize function to find the solution to the
-non-linear inversion problem. Because EOSs may not be truley invertible, the Inverter class uses a loss function to
-find the closest solution to the target energy over a limited range of temperatures and densities. This is intended
-to be a range centered around the initial guess for the inversion and limited in size by some expected maximum deviation
-from the initial guess.</p>
+to invert the EOS tables. The Inverter class uses PyTorch optimizers to find the solution to the non-linear inversion problem.
+Because EOSs may not be truly invertible, the Inverter class uses a loss function to find the closest solution to the target energy
+over a limited range of temperatures and densities. This is intended to be a range centered around the initial guess for the inversion
+and limited in size by some expected maximum deviation from the initial guess.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -117,55 +116,20 @@ from the initial guess.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.Inverter.set_bounds">
-<span class="sig-name descname"><span class="pre">set_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newBounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.set_bounds" title="Link to this definition">¶</a></dt>
-<dd><p>Sets the bounds for the inversion</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>newBounds</strong><span class="classifier">tuple</span></dt><dd><p>Tuple containing the new bounds for the inversion</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>bool</dt><dd><p>True if the bounds are set successfully, False otherwise</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">set_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tRange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rRange</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.set_bounds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density">
-<span class="sig-name descname"><span class="pre">temperature_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logTInit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logRhoInit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density" title="Link to this definition">¶</a></dt>
-<dd><p>Inverts the EOS to find the temperature and density that gives the target energy</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>energy</strong><span class="classifier">float</span></dt><dd><p>Target energy to invert the EOS to</p>
-</dd>
-<dt><strong>logTInit</strong><span class="classifier">float</span></dt><dd><p>Initial guess for the temperature (log10(T)) to start the inversion</p>
-</dd>
-<dt><strong>logRhoInit</strong><span class="classifier">float</span></dt><dd><p>Initial guess for the density (log10(ρ)) to start the inversion</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>np.ndarray</dt><dd><p>Array containing the temperature and density that gives the target energy</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt>EOSInverterError</dt><dd><p>If the inversion fails to find a solution</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">temperature_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logTInit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logRhoInit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.cupy_to_torch">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.EOS.invert.EOSInverter.</span></span><span class="sig-name descname"><span class="pre">cupy_to_torch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cupy_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.cupy_to_torch" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-CoolDwarf.EOS.invert">
@@ -193,7 +157,7 @@ from the initial guess.</p>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.ext.html">CoolDwarf.ext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CoolDwarf.EOS.invert</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -202,12 +166,9 @@ from the initial guess.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.html">CoolDwarf.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.dsep.html">CoolDwarf.model.dsep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.mesa.html">CoolDwarf.model.mesa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.html">CoolDwarf.opac</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.aesopus.html">CoolDwarf.opac.aesopus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.interp.html">CoolDwarf.utils.interp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.misc.html">CoolDwarf.utils.misc</a></li>
 </ul>
 
 <div class="relations">

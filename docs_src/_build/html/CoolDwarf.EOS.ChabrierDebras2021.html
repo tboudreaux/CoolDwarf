@@ -47,10 +47,10 @@ linear values in cgs units.</p>
 <section id="dependencies">
 <h3>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>numpy</p></li>
 <li><p>pandas</p></li>
 <li><p>scipy</p></li>
-<li><p>CoolDwarf.utils.interp</p></li>
+<li><p>cupy</p></li>
+<li><p>torch</p></li>
 </ul>
 </section>
 <section id="example-usage">
@@ -150,6 +150,22 @@ bounds, a ValueError is raised.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS.energy_torch">
+<span class="sig-name descname"><span class="pre">energy_torch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logRho</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS.energy_torch" title="Link to this definition">¶</a></dt>
+<dd><p>Find the energy at the given temperature and density using PyTorch tensors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>logT</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Log10 of the temperature in K</p>
+</dd>
+<dt><strong>logRho</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Log10 of the density in g/cm^3</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS.parse_table">
 <span class="sig-name descname"><span class="pre">parse_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.ChabrierDebras2021.EOS.CH21EOS.parse_table" title="Link to this definition">¶</a></dt>
 <dd><p>Parse the Chabrier Debras 2021 EOS table and store the data in the class. Parsing is done using regular
@@ -229,7 +245,7 @@ dimension corresponding to the density, and the third dimension corresponding to
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.ext.html">CoolDwarf.ext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="CoolDwarf.EOS.html#subpackages">Subpackages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CoolDwarf.EOS.html#submodules">Submodules</a></li>
@@ -239,12 +255,9 @@ dimension corresponding to the density, and the third dimension corresponding to
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.invert.html">CoolDwarf.EOS.invert</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.html">CoolDwarf.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.dsep.html">CoolDwarf.model.dsep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.mesa.html">CoolDwarf.model.mesa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.html">CoolDwarf.opac</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.aesopus.html">CoolDwarf.opac.aesopus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.interp.html">CoolDwarf.utils.interp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.misc.html">CoolDwarf.utils.misc</a></li>
 </ul>
 
 <div class="relations">

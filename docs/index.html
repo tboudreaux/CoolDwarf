@@ -35,6 +35,82 @@
 <h1>CoolDwarf Project<a class="headerlink" href="#cooldwarf-project" title="Link to this heading">¶</a></h1>
 <p>Welcome to the CoolDwarf project. This project aims to provide a easy to use and physically robsut
 3D cooling model for fully convective stars.</p>
+<p>CoolDwarf is in very early stages of development and is not yet ready for general or scientific use. However,
+we welcome any feedback or contributions to the project.</p>
+<p>The CoolDwarf project is hosted on GitHub at <a class="reference external" href="https://github.com/tboudreaux/CoolDwarf">https://github.com/tboudreaux/CoolDwarf</a></p>
+</section>
+<section id="depedenices">
+<h1>Depedenices<a class="headerlink" href="#depedenices" title="Link to this heading">¶</a></h1>
+<p>CoolDwarf requires the following packages to be installed:</p>
+<ul class="simple">
+<li><p>numpy</p></li>
+<li><p>scipy</p></li>
+<li><p>matplotlib</p></li>
+<li><p>tqdm</p></li>
+<li><p>torch</p></li>
+</ul>
+<p>Optional packages:</p>
+<ul class="simple">
+<li><p>cupy</p></li>
+</ul>
+<p>If you are using a CUDA enabled GPU, you can install the cupy package to speed up the calculations
+significantly. If you do not have a CUDA enabled GPU, you can still use the package, but it will be
+significantly slower. CoolDwarf will automatically detect if cupy is installed and use it if it is available.</p>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
+<p>To install the CoolDwarf package, you can use the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/tboudreaux/CoolDwarf.git
+<span class="nb">cd</span><span class="w"> </span>CoolDwarf
+pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h1>
+<p>The CoolDwarf package is designed to be easy to use. The primary entry point for
+using the package is the CoolDwarf.star.VoxelSphere class. This class is used to create a 5D
+model of a star.</p>
+<p>The model is contructed of a grid of equal volume elements spread over a sphere. A MESA model
+is used to provide the initial temperature and density profiles of the star. An equation of state
+from Chabrier and Debras 2021 is used to calculate the pressure and energy of the star. The radiative opacity
+of the star is currentl treated monocromatically and with a simplistic Kramer’s opacity model (this is a high
+priority area for improvement).</p>
+<p>Evolution of the Cooling model is preformed by calculating the radiative and convective energy gradients
+at each grid point and to find the new energy after some small time step. The Equation of state is then inverted
+to update the density, temperature, and pressure of the model.</p>
+<p>Timesteps are dynamicall calculated using the Courant-Friedrichs-Lewy (CFL) condition. The CFL condition is used to ensure
+that the timestep is small enough to prevent the model from becoming unstable. If the user wishes to use a fixed timestep,
+they can set the cfl_factor to infinity. Alternativley the timestep can be fixed by setting it lower than the CFL condition.</p>
+<p>Currently, numerical instabilities exist; however, we are working to resolve these issues. A breif example
+of how to use the package is shown below (note that neither the EOS tables nor the MESA model are included in the
+repository; however, these are either readily available online (in the case of the EOS model) or can be generated
+easily using MESA):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">CoolDwarf.star</span> <span class="kn">import</span> <span class="n">VoxelSphere</span><span class="p">,</span> <span class="n">default_tol</span>
+<span class="kn">from</span> <span class="nn">CoolDwarf.utils</span> <span class="kn">import</span> <span class="n">setup_logging</span>
+<span class="kn">from</span> <span class="nn">CoolDwarf.EOS</span> <span class="kn">import</span> <span class="n">get_eos</span>
+<span class="kn">from</span> <span class="nn">CoolDwarf.opac</span> <span class="kn">import</span> <span class="n">KramerOpac</span>
+<span class="kn">from</span> <span class="nn">CoolDwarf.utils.output</span> <span class="kn">import</span> <span class="n">binmod</span>
+
+<span class="n">modelWriter</span> <span class="o">=</span> <span class="n">binmod</span><span class="p">()</span>
+
+<span class="n">setup_logging</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">EOS</span> <span class="o">=</span> <span class="n">get_eos</span><span class="p">(</span><span class="s2">&quot;EOS/TABLEEOS_2021_Trho_Y0292_v1&quot;</span><span class="p">,</span> <span class="s2">&quot;CD21&quot;</span><span class="p">)</span>
+<span class="n">opac</span> <span class="o">=</span> <span class="n">KramerOpac</span><span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span>
+<span class="n">sphere</span> <span class="o">=</span> <span class="n">VoxelSphere</span><span class="p">(</span>
+   <span class="mf">8e31</span><span class="p">,</span>
+   <span class="s2">&quot;BrownDwarfMESA/BD_TEST.mod&quot;</span><span class="p">,</span>
+   <span class="n">EOS</span><span class="p">,</span>
+   <span class="n">opac</span><span class="p">,</span>
+   <span class="n">radialResolution</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+   <span class="n">altitudinalResolition</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+   <span class="n">azimuthalResolition</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+   <span class="n">cfl_factor</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">sphere</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">maxTime</span> <span class="o">=</span> <span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">24</span><span class="p">,</span> <span class="n">pbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -43,8 +119,10 @@
 <li class="toctree-l2"><a class="reference internal" href="CoolDwarf.html#module-CoolDwarf">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.ext.html">CoolDwarf.ext</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.ext.html#module-CoolDwarf.ext">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.star.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.star.html#module-CoolDwarf.star.sphere">CoolDwarf.star.sphere module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.star.html#module-CoolDwarf.star">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a><ul>
@@ -67,12 +145,6 @@
 <li class="toctree-l2"><a class="reference internal" href="CoolDwarf.model.html#module-CoolDwarf.model">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.dsep.html">CoolDwarf.model.dsep</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.model.dsep.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.model.dsep.html#module-CoolDwarf.model.dsep.dsep">CoolDwarf.model.dsep.dsep module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.model.dsep.html#module-CoolDwarf.model.dsep">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.mesa.html">CoolDwarf.model.mesa</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="CoolDwarf.model.mesa.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CoolDwarf.model.mesa.html#module-CoolDwarf.model.mesa.mesa">CoolDwarf.model.mesa.mesa module</a></li>
@@ -87,22 +159,12 @@
 <li class="toctree-l2"><a class="reference internal" href="CoolDwarf.opac.html#module-CoolDwarf.opac">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.aesopus.html">CoolDwarf.opac.aesopus</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.opac.aesopus.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.opac.aesopus.html#module-CoolDwarf.opac.aesopus.load">CoolDwarf.opac.aesopus.load module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.opac.aesopus.html#module-CoolDwarf.opac.aesopus">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.star.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.star.html#module-CoolDwarf.star.sphere">CoolDwarf.star.sphere module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.star.html#module-CoolDwarf.star">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.interp.html">CoolDwarf.utils.interp</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.interp.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.interp.html#module-CoolDwarf.utils.interp.interpolate">CoolDwarf.utils.interp.interpolate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.interp.html#module-CoolDwarf.utils.interp">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.misc.html">CoolDwarf.utils.misc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.misc.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.misc.html#cooldwarf-utils-misc-evolve-module">CoolDwarf.utils.misc.evolve module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.misc.html#module-CoolDwarf.utils.misc.logging">CoolDwarf.utils.misc.logging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.misc.html#module-CoolDwarf.utils.misc.ndarray">CoolDwarf.utils.misc.ndarray module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.misc.html#module-CoolDwarf.utils.misc">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -137,16 +199,13 @@
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.ext.html">CoolDwarf.ext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.invert.html">CoolDwarf.EOS.invert</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.html">CoolDwarf.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.dsep.html">CoolDwarf.model.dsep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.mesa.html">CoolDwarf.model.mesa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.html">CoolDwarf.opac</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.aesopus.html">CoolDwarf.opac.aesopus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.interp.html">CoolDwarf.utils.interp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.misc.html">CoolDwarf.utils.misc</a></li>
 </ul>
 
 <div class="relations">

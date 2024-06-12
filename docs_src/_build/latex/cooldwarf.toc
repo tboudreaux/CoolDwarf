@@ -1,0 +1,108 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Depedenices}{3}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Installation}{5}{chapter.2}%
+\contentsline {chapter}{\numberline {3}Usage}{7}{chapter.3}%
+\contentsline {section}{\numberline {3.1}CoolDwarf package}{8}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Subpackages}{8}{subsection.3.1.1}%
+\contentsline {subsubsection}{CoolDwarf.EOS package}{8}{subsubsection*.3}%
+\contentsline {paragraph}{Subpackages}{8}{paragraph*.4}%
+\contentsline {subparagraph}{CoolDwarf.EOS.ChabrierDebras2021 package}{8}{subparagraph*.5}%
+\contentsline {subparagraph}{Submodules}{8}{subparagraph*.6}%
+\contentsline {subparagraph}{CoolDwarf.EOS.ChabrierDebras2021.EOS module}{8}{subparagraph*.7}%
+\contentsline {subparagraph}{Dependencies}{8}{subparagraph*.8}%
+\contentsline {subparagraph}{Example usage}{8}{subparagraph*.9}%
+\contentsline {subparagraph}{Module contents}{10}{subparagraph*.18}%
+\contentsline {subparagraph}{CoolDwarf.EOS.invert package}{10}{subparagraph*.19}%
+\contentsline {subparagraph}{Submodules}{10}{subparagraph*.20}%
+\contentsline {subparagraph}{CoolDwarf.EOS.invert.EOSInverter module}{10}{subparagraph*.21}%
+\contentsline {subparagraph}{Dependencies}{11}{subparagraph*.22}%
+\contentsline {subparagraph}{Example usage}{11}{subparagraph*.23}%
+\contentsline {subparagraph}{Module contents}{12}{subparagraph*.28}%
+\contentsline {paragraph}{Submodules}{12}{paragraph*.29}%
+\contentsline {paragraph}{CoolDwarf.EOS.EOS module}{12}{paragraph*.30}%
+\contentsline {subparagraph}{Dependencies}{12}{subparagraph*.31}%
+\contentsline {subparagraph}{Example usage}{12}{subparagraph*.32}%
+\contentsline {paragraph}{Module contents}{13}{paragraph*.34}%
+\contentsline {subsubsection}{CoolDwarf.err package}{13}{subsubsection*.35}%
+\contentsline {paragraph}{Submodules}{13}{paragraph*.36}%
+\contentsline {paragraph}{CoolDwarf.err.energy module}{13}{paragraph*.37}%
+\contentsline {paragraph}{CoolDwarf.err.eos module}{13}{paragraph*.40}%
+\contentsline {paragraph}{Module contents}{14}{paragraph*.44}%
+\contentsline {subsubsection}{CoolDwarf.ext package}{14}{subsubsection*.45}%
+\contentsline {paragraph}{Module contents}{14}{paragraph*.46}%
+\contentsline {subsubsection}{CoolDwarf.model package}{14}{subsubsection*.47}%
+\contentsline {paragraph}{Subpackages}{14}{paragraph*.48}%
+\contentsline {subparagraph}{CoolDwarf.model.dsep package}{14}{subparagraph*.49}%
+\contentsline {subparagraph}{Submodules}{14}{subparagraph*.50}%
+\contentsline {subparagraph}{CoolDwarf.model.dsep.dsep module}{14}{subparagraph*.51}%
+\contentsline {subparagraph}{Module contents}{14}{subparagraph*.53}%
+\contentsline {subparagraph}{CoolDwarf.model.mesa package}{14}{subparagraph*.54}%
+\contentsline {subparagraph}{Submodules}{14}{subparagraph*.55}%
+\contentsline {subparagraph}{CoolDwarf.model.mesa.mesa module}{14}{subparagraph*.56}%
+\contentsline {subparagraph}{Dependencies}{14}{subparagraph*.57}%
+\contentsline {subparagraph}{Example usage}{14}{subparagraph*.58}%
+\contentsline {subparagraph}{Module contents}{15}{subparagraph*.60}%
+\contentsline {paragraph}{Submodules}{15}{paragraph*.61}%
+\contentsline {paragraph}{CoolDwarf.model.model module}{15}{paragraph*.62}%
+\contentsline {subparagraph}{Dependencies}{15}{subparagraph*.63}%
+\contentsline {subparagraph}{Example usage}{15}{subparagraph*.64}%
+\contentsline {paragraph}{Module contents}{16}{paragraph*.66}%
+\contentsline {subsubsection}{CoolDwarf.opac package}{16}{subsubsection*.67}%
+\contentsline {paragraph}{Subpackages}{16}{paragraph*.68}%
+\contentsline {subparagraph}{CoolDwarf.opac.aesopus package}{16}{subparagraph*.69}%
+\contentsline {subparagraph}{Submodules}{16}{subparagraph*.70}%
+\contentsline {subparagraph}{CoolDwarf.opac.aesopus.load module}{16}{subparagraph*.71}%
+\contentsline {subparagraph}{Module contents}{16}{subparagraph*.73}%
+\contentsline {paragraph}{Submodules}{16}{paragraph*.74}%
+\contentsline {paragraph}{CoolDwarf.opac.kramer module}{16}{paragraph*.75}%
+\contentsline {subparagraph}{Example usage}{16}{subparagraph*.76}%
+\contentsline {paragraph}{CoolDwarf.opac.opacInterp module}{17}{paragraph*.79}%
+\contentsline {paragraph}{Module contents}{17}{paragraph*.82}%
+\contentsline {subsubsection}{CoolDwarf.star package}{17}{subsubsection*.83}%
+\contentsline {paragraph}{Submodules}{17}{paragraph*.84}%
+\contentsline {paragraph}{CoolDwarf.star.sphere module}{17}{paragraph*.85}%
+\contentsline {subparagraph}{Dependencies}{18}{subparagraph*.86}%
+\contentsline {subparagraph}{Classes}{18}{subparagraph*.87}%
+\contentsline {subparagraph}{Functions}{18}{subparagraph*.88}%
+\contentsline {subparagraph}{Exceptions}{18}{subparagraph*.89}%
+\contentsline {subparagraph}{Example Usage}{18}{subparagraph*.90}%
+\contentsline {paragraph}{Module contents}{25}{paragraph*.122}%
+\contentsline {subsubsection}{CoolDwarf.utils package}{25}{subsubsection*.123}%
+\contentsline {paragraph}{Subpackages}{25}{paragraph*.124}%
+\contentsline {subparagraph}{CoolDwarf.utils.const package}{25}{subparagraph*.125}%
+\contentsline {subparagraph}{Submodules}{25}{subparagraph*.126}%
+\contentsline {subparagraph}{CoolDwarf.utils.const.const module}{25}{subparagraph*.127}%
+\contentsline {subparagraph}{Example usage}{25}{subparagraph*.128}%
+\contentsline {subparagraph}{Module contents}{26}{subparagraph*.129}%
+\contentsline {subparagraph}{CoolDwarf.utils.format package}{26}{subparagraph*.130}%
+\contentsline {subparagraph}{Submodules}{26}{subparagraph*.131}%
+\contentsline {subparagraph}{CoolDwarf.utils.format.format module}{26}{subparagraph*.132}%
+\contentsline {subparagraph}{Module contents}{26}{subparagraph*.135}%
+\contentsline {subparagraph}{CoolDwarf.utils.interp package}{26}{subparagraph*.136}%
+\contentsline {subparagraph}{Submodules}{26}{subparagraph*.137}%
+\contentsline {subparagraph}{CoolDwarf.utils.interp.interpolate module}{26}{subparagraph*.138}%
+\contentsline {subparagraph}{Module contents}{26}{subparagraph*.142}%
+\contentsline {subparagraph}{CoolDwarf.utils.math package}{26}{subparagraph*.143}%
+\contentsline {subparagraph}{Submodules}{26}{subparagraph*.144}%
+\contentsline {subparagraph}{CoolDwarf.utils.math.calc module}{26}{subparagraph*.145}%
+\contentsline {subparagraph}{Dependencies}{27}{subparagraph*.146}%
+\contentsline {subparagraph}{Example usage}{27}{subparagraph*.147}%
+\contentsline {subparagraph}{CoolDwarf.utils.math.kernel module}{28}{subparagraph*.150}%
+\contentsline {subparagraph}{Module contents}{28}{subparagraph*.152}%
+\contentsline {subparagraph}{CoolDwarf.utils.misc package}{28}{subparagraph*.153}%
+\contentsline {subparagraph}{Submodules}{28}{subparagraph*.154}%
+\contentsline {subparagraph}{CoolDwarf.utils.misc.evolve module}{28}{subparagraph*.155}%
+\contentsline {subparagraph}{CoolDwarf.utils.misc.logging module}{28}{subparagraph*.156}%
+\contentsline {subparagraph}{Example usage}{28}{subparagraph*.157}%
+\contentsline {subparagraph}{CoolDwarf.utils.misc.ndarray module}{29}{subparagraph*.164}%
+\contentsline {subparagraph}{Module contents}{32}{subparagraph*.166}%
+\contentsline {subparagraph}{CoolDwarf.utils.plot package}{32}{subparagraph*.167}%
+\contentsline {subparagraph}{Submodules}{32}{subparagraph*.168}%
+\contentsline {subparagraph}{CoolDwarf.utils.plot.plot2d module}{32}{subparagraph*.169}%
+\contentsline {subparagraph}{CoolDwarf.utils.plot.plot3d module}{32}{subparagraph*.172}%
+\contentsline {subparagraph}{Module contents}{32}{subparagraph*.174}%
+\contentsline {paragraph}{Module contents}{32}{paragraph*.175}%
+\contentsline {subsection}{\numberline {3.1.2}Module contents}{32}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Indices and tables}{32}{section.3.2}%
+\contentsline {chapter}{Python Module Index}{33}{section*.176}%
+\contentsline {chapter}{Index}{35}{section*.177}%

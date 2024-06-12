@@ -43,12 +43,15 @@
 <dt class="sig sig-object py" id="CoolDwarf.err.energy.EnergyConservationError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.err.energy.</span></span><span class="sig-name descname"><span class="pre">EnergyConservationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.err.energy.EnergyConservationError" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An exception class for energy conservation error. This exception is raised when the energy conservation is not
+satisfied during integration of the model.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="CoolDwarf.err.energy.NonConvergenceError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.err.energy.</span></span><span class="sig-name descname"><span class="pre">NonConvergenceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.err.energy.NonConvergenceError" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An exception class for non-convergence error. This exception is raised when the solver does not converge.</p>
 </dd></dl>
 
 </section>
@@ -58,18 +61,21 @@
 <dt class="sig sig-object py" id="CoolDwarf.err.eos.EOSBoundsError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.err.eos.</span></span><span class="sig-name descname"><span class="pre">EOSBoundsError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.err.eos.EOSBoundsError" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An exception class for EOS bounds error. This exception is raised when the bounds for the inversion are not valid.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="CoolDwarf.err.eos.EOSFormatError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.err.eos.</span></span><span class="sig-name descname"><span class="pre">EOSFormatError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.err.eos.EOSFormatError" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An exception class for EOS format error. This exception is raised when the EOS format is not recognized.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="CoolDwarf.err.eos.EOSInverterError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.err.eos.</span></span><span class="sig-name descname"><span class="pre">EOSInverterError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.err.eos.EOSInverterError" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An exception class for EOS inverter error. This exception is raised when an error occurs during the inversion of the EOS.</p>
 </dd></dl>
 
 </section>
@@ -102,16 +108,13 @@
 <li class="toctree-l2"><a class="reference internal" href="CoolDwarf.html#module-CoolDwarf">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.ext.html">CoolDwarf.ext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.invert.html">CoolDwarf.EOS.invert</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.html">CoolDwarf.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.dsep.html">CoolDwarf.model.dsep</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.mesa.html">CoolDwarf.model.mesa</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.html">CoolDwarf.opac</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.aesopus.html">CoolDwarf.opac.aesopus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.interp.html">CoolDwarf.utils.interp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.misc.html">CoolDwarf.utils.misc</a></li>
 </ul>
 
 <div class="relations">
