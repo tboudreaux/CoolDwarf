@@ -3,8 +3,6 @@ import pickle
 import struct
 import numpy as np
 
-from CoolDwarf.star import VoxelSphere
-
 class binmod:
     SOH = bytes([0x01])
     RS = bytes([0x1E])
@@ -78,7 +76,7 @@ class binmod:
 
         return b
 
-    def save(self, filename: str, star: VoxelSphere, checksums=False):
+    def save(self, filename: str, star: "VoxelSphere", checksums=False):
         header = self.build_header(star, checksums=checksums)
         body = self.build_body(star)
         with open(filename, 'wb') as f:
