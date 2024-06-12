@@ -22,3 +22,4 @@ tags
 .coverage
 *.log
 *.evolve
+*.bin
