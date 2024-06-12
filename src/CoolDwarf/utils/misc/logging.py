@@ -52,12 +52,15 @@ def setup_logging(debug: bool = False):
             'standard': {
                 'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             },
+            'term': {
+                'format': '%(levelname)s: %(message)s',
+                }
         },
         'handlers': {
             'console': {
                 'class': 'logging.StreamHandler',
                 'level': 30,
-                'formatter': 'standard',
+                'formatter': 'term',
                 'stream': 'ext://sys.stdout',
             },
             'file_all_except_custom': {
