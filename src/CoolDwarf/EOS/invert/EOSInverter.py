@@ -10,9 +10,8 @@ limited in size by some expected maximum deviation from the initial guess.
 
 Dependencies
 ------------
-- numpy
-- scipy
 - cupy
+- torch
 - CoolDwarf.err
 
 Example usage
@@ -29,15 +28,13 @@ Example usage
 >>> inverter.set_bounds(newBounds)
 >>> logT, logRho = inverter.temperature_density(energy, logTInit, logRhoInit)
 """
-from scipy.optimize import minimize
-import numpy as np
-from typing import Tuple
-
-import cupy as cp
 import torch
 import torch.optim as optim
 
-from CoolDwarf.err import EOSInverterError, EOSBoundsError
+from CoolDwarf.err import EOSInverterError
+from CoolDwarf.utils.misc.backend import get_array_module
+
+xp, CUPY = get_array_module()
 
 def cupy_to_torch(cupy_array):
     return torch.as_tensor(cupy_array.get(), device='cuda')
@@ -102,14 +99,11 @@ class Inverter:
             logRhoInit = logRhoInit.to(self.device).requires_grad_(True)
             energy = energy.to(self.device).requires_grad_(True)
 
-            optimizer = torch.optim.Adam([logTInit, logRhoInit], lr=lr)
+            optimizer = optim.Adam([logTInit, logRhoInit], lr=lr)
 
             logTInitFlat = logTInit.flatten()
             logRhoInitFlat = logRhoInit.flatten()
             energyFlat = energy.flatten()
-
-            T_bounds = self._bounds[0].reshape(2, -1).to(self.device)
-            Rho_bounds = self._bounds[1].reshape(2, -1).to(self.device)
 
             # Reshape bounds to match the flattened grid shape
             T_min_bounds = self._bounds[0, 0].flatten().to(self.device)
@@ -132,8 +126,9 @@ class Inverter:
 
                     if loss.item() < 1e-4:
                         break
+
             if loss.item() >= 1e-4:
-                raise EOSInverterError(f"No Inversion found for U={energy.cpu().detach().numpy()} within the given bounds")
+                raise EOSInverterError(f"No Inversion found for energy within the given bounds")
 
             # Reshape the result back to the original grid shape
             logT_result = logTInitFlat.view(logTInit.shape)
@@ -167,5 +162,8 @@ class Inverter:
         return loss
 
     def set_bounds(self, tRange, rRange):
-        bounds = cp.array([[tRange[0], tRange[1]], [rRange[0], rRange[1]]])
-        self._bounds = torch.tensor(bounds.get(), device=self.device)
+        bounds = xp.array([[tRange[0], tRange[1]], [rRange[0], rRange[1]]])
+        if CUPY:
+            self._bounds = torch.tensor(bounds.get(), device=self.device)
+        else:
+            self._bounds = torch.tensor(bounds, device=self.device)

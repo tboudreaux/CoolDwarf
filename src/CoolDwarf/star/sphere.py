@@ -18,6 +18,9 @@ Dependencies
 ------------
 - numpy
 - tqdm
+- torch
+- cupy
+- pandas
 - scipy.interpolate
 - CoolDwarf.utils.math
 - CoolDwarf.utils.const
@@ -38,6 +41,8 @@ Exceptions
 ----------
 - EnergyConservationError: Raised when there is a violation of energy conservation.
 - NonConvergenceError: Raised when a computation fails to converge.
+- VolumeError: Raised when the volume error is greater than the tolerance.
+- ResolutionError: Raised when the resolution is insufficient.
 
 
 Example Usage
@@ -60,15 +65,14 @@ Example Usage
     >>> sphere.evolve(maxTime=3.154e+7, dt=86400)
     >>> print(f"Surface Temp: {sphere.surface_temperature_profile}")
 """
-import numpy as cp
-import cupy as cp
+from scipy.interpolate import RegularGridInterpolator
 import torch
-import itertools
-from cupyx.scipy.interpolate import RegularGridInterpolator
-import logging
 from tqdm import tqdm
+import pandas as pd
 
+import os
 from typing import Tuple
+import logging
 
 from CoolDwarf.utils.math import partial_derivative_x
 from CoolDwarf.utils.const import CONST as CoolDwarfCONST
@@ -76,6 +80,12 @@ from CoolDwarf.utils.const import CONST as CoolDwarfCONST
 from CoolDwarf.EOS import Inverter
 from CoolDwarf.model import get_model
 from CoolDwarf.err import EnergyConservationError, NonConvergenceError, VolumeError, ResolutionError
+from CoolDwarf.err import EOSInverterError
+from CoolDwarf.utils.output import binmod
+from CoolDwarf.utils.misc.backend import get_array_module, get_interpolator
+
+xp, CUPY = get_array_module()
+RegularGridInterpolator = get_interpolator()
 
 def default_tol():
     """
@@ -162,6 +172,10 @@ class VoxelSphere:
             alpha=1.901,
             mindt=0.1,
             cfl_factor = 0.5,
+            imodelOut=False,
+            imodelOutCadence=1000,
+            imodelOutCadenceUnit='s',
+            fmodelOut=True
             ):
         """
         Constructs a VoxelSphere object with the specified parameters.
@@ -210,6 +224,15 @@ class VoxelSphere:
             The minimum timestep for the star. Default is 0.1.
         cfl_factor : float, optional
             The Courant-Friedrichs-Lewy factor for the star. Default is 0.5.
+        imodelOut : bool, optional
+            A flag to output the model at each timestep. Default is False.
+        imodelOutCadence : int, optional
+            The cadence at which to output the model. Default is 1000.
+        imodelOutCadenceUnit : str, optional
+            The unit of the cadence for outputting the model. Default is 's'
+            for seconds. Avalible units are 's' (seconds) and 'i' (iterations)
+        fmodelOut : bool, optional
+            A flag to output the final model. Default is True.
         """
         self._logger = logging.getLogger("CoolDwarf.star.sphere.VoxelSphere")
 
@@ -239,18 +262,28 @@ class VoxelSphere:
         self._tolerances = tol
 
         self._1D_structure = get_model(self._model_path, modelFormat)
-        self._radius = cp.exp(self._1D_structure.lnR.values.max())
+        self._radius = xp.exp(self._1D_structure.lnR.values.max())
+        
+        if CUPY:
+            radialDomain = xp.exp(xp.array([self._1D_structure.lnR.values]))
+            tempDomain = xp.exp(xp.array(self._1D_structure.lnT.values))
+            densityDomain = xp.exp(xp.array(self._1D_structure.lnd.values))
+        else:
+            radialDomain = xp.exp([self._1D_structure.lnR.values])
+            tempDomain = xp.exp(self._1D_structure.lnT.values)
+            densityDomain = xp.exp(self._1D_structure.lnd.values)
+
         self._densityf = RegularGridInterpolator(
-                cp.exp(cp.array([self._1D_structure.lnR.values])),
-                cp.exp(cp.array(self._1D_structure.lnd.values)),
+                radialDomain,
+                densityDomain,
                 bounds_error=False,
-                fill_value=cp.exp(self._1D_structure.lnd.values.max())
+                fill_value=xp.exp(self._1D_structure.lnd.values.max())
                 )
         self._temperaturef = RegularGridInterpolator(
-                cp.exp(cp.array([self._1D_structure.lnR.values])),
-                cp.exp(cp.array(self._1D_structure.lnT.values)),
+                radialDomain,
+                tempDomain,
                 bounds_error=False,
-                fill_value=cp.exp(self._1D_structure.lnT.values.max())
+                fill_value=xp.exp(self._1D_structure.lnT.values.max())
                 )
 
         self._eos = EOS
@@ -260,6 +293,13 @@ class VoxelSphere:
 
         self._evolutionarySteps = 0
         self._t = 0
+
+        self.imodelOut = imodelOut
+        self.imodelOutCadence = imodelOutCadence
+        self.imodelOutCadenceUnit = imodelOutCadenceUnit
+        self.fmodelOut = fmodelOut
+
+        self._modelOutputController = binmod()
 
     @property
     def enclosed_mass(self):
@@ -271,13 +311,13 @@ class VoxelSphere:
             interp1d: A 1D interpolation function for the enclosed mass.
         """
         enclosedMass = list()
-        radii = cp.linspace(0, cp.exp(self._1D_structure.lnR.values.max()))
-        integralMass = cp.trapz(self._densityf(radii), radii)
+        radii = xp.linspace(0, xp.exp(self._1D_structure.lnR.values.max()))
+        integralMass = xp.trapz(self._densityf(radii), radii)
         for r in radii:
-            rs = cp.linspace(0, r)
-            em = cp.trapz(self._densityf(rs) * (self._mass/integralMass), rs)
+            rs = xp.linspace(0, r)
+            em = xp.trapz(self._densityf(rs) * (self._mass/integralMass), rs)
             enclosedMass.append(em)
-        enclosedMass = cp.array(enclosedMass)
+        enclosedMass = xp.array(enclosedMass)
         return RegularGridInterpolator((radii,), enclosedMass)
         
     @property
@@ -320,25 +360,25 @@ class VoxelSphere:
         -------------
         >>> r, theta, phi, volume = spherical_grid_equal_volume(10, 10, 10, 1)
         """
-        rEdges = cp.linspace(0, radius, numRadial + 1)
+        rEdges = xp.linspace(0, radius, numRadial + 1)
         r = (rEdges[:-1] + rEdges[1:]) / 2 
-        dr = cp.diff(rEdges) 
+        dr = xp.diff(rEdges) 
 
-        thetaEdges = cp.linspace(0, 2 * cp.pi, numTheta + 1)
+        thetaEdges = xp.linspace(0, 2 * xp.pi, numTheta + 1)
         theta = (thetaEdges[:-1] + thetaEdges[1:]) / 2 
-        dtheta = cp.diff(thetaEdges) 
+        dtheta = xp.diff(thetaEdges) 
 
-        phiEdges = cp.linspace(0, cp.pi, numPhi + 1)
+        phiEdges = xp.linspace(0, xp.pi, numPhi + 1)
         phi = (phiEdges[:-1] + phiEdges[1:]) / 2 
-        dphi = cp.diff(phiEdges)  
+        dphi = xp.diff(phiEdges)  
 
-        R, THETA, PHI = cp.meshgrid(r, theta, phi, indexing='ij')
-        dR, dTHETA, dPHI = cp.meshgrid(dr, dtheta, dphi, indexing='ij')
+        R, THETA, PHI = xp.meshgrid(r, theta, phi, indexing='ij')
+        dR, dTHETA, dPHI = xp.meshgrid(dr, dtheta, dphi, indexing='ij')
 
-        volumeElements = (R ** 2) * cp.sin(PHI) * dR * dTHETA * dPHI
+        volumeElements = (R ** 2) * xp.sin(PHI) * dR * dTHETA * dPHI
 
-        discreteVolume = cp.sum(volumeElements)
-        trueVolume = 4/3 * cp.pi * radius**3
+        discreteVolume = xp.sum(volumeElements)
+        trueVolume = 4/3 * xp.pi * radius**3
         
         # Check if the fractional error in the volume difference is within tol['volCheck']
         if abs(discreteVolume - trueVolume) / trueVolume > self._tolerances['volCheck']:
@@ -364,11 +404,11 @@ class VoxelSphere:
         self._dr = self.r[1] - self.r[0]
 
         if self.theta.size == 1:
-            self._dtheta = 2*cp.pi
+            self._dtheta = 2*xp.pi
         else:
             self._dtheta = self.theta[1] - self.theta[0]
         if self.phi.size == 1:
-            self._dphi = cp.pi
+            self._dphi = xp.pi
         else:
             self._dphi = self.phi[1] - self.phi[0]
 
@@ -384,12 +424,12 @@ class VoxelSphere:
         """
         Computes the pressure and energy grids using the EOS.
         """
-        logT = cp.log10(self._temperatureGrid)
-        logRho = cp.log10(self._densityGrid)
+        logT = xp.log10(self._temperatureGrid)
+        logRho = xp.log10(self._densityGrid)
         self._pressureGrid = 1e10 * self._eos.pressure(logT, logRho)
         self._energyGrid = 1e13 * ((self._differentialMassGrid/1000) * self._eos.energy(logT, logRho))
 
-    def _make_TD_search_grid(self, f: float = 0.01) -> Tuple[Tuple[cp.ndarray, cp.ndarray], Tuple[cp.ndarray, cp.ndarray]]:
+    def _make_TD_search_grid(self, f: float = 0.01) -> Tuple[Tuple[xp.ndarray, xp.ndarray], Tuple[xp.ndarray, xp.ndarray]]:
         """
         Builds a limited 2D domain for the temperature and density grids for the EOS inversion.
         This is used to limit the search space for the EOS inversion and to make the
@@ -402,13 +442,13 @@ class VoxelSphere:
         """
         fT = f * self._temperatureGrid
         fD = f * self._densityGrid
-        lowerTRange = cp.log10(self._temperatureGrid - fT)
-        upperTRange = cp.log10(self._temperatureGrid + fT)
-        lowerDRange = cp.log10(self._densityGrid - fD)
-        upperDRange = cp.log10(self._densityGrid + fD)
+        lowerTRange = xp.log10(self._temperatureGrid - fT)
+        upperTRange = xp.log10(self._temperatureGrid + fT)
+        lowerDRange = xp.log10(self._densityGrid - fD)
+        upperDRange = xp.log10(self._densityGrid + fD)
         return ((lowerTRange, upperTRange), (lowerDRange, upperDRange))
 
-    def _reverse_EOS(self, f: float = 0.01, pbar: bool = False):
+    def _reverse_EOS(self, f: float = 0.01):
         """
         Computes the temperature and density grids from the energy grid using the inverted EOS.
         The first step here is for the energy grid (which is in the form of internal energy at each
@@ -428,20 +468,29 @@ class VoxelSphere:
         ----------
         f : float, optional
             A factor to limit the search space for the EOS inversion. Default is 0.01.
-        pbar : bool, optional
-            A flag to show a progress bar for the inversion. Default is False.
         """
         specificInternalEnergy = (1000 * self._energyGrid)/(1e13 * self._differentialMassGrid)
-        initT = torch.from_numpy(cp.log10(self._temperatureGrid).get())
-        initRho = torch.from_numpy(cp.log10(self._densityGrid).get())
-        energy = torch.from_numpy(specificInternalEnergy.get())
+        if CUPY:
+            npInitT = xp.log10(self._temperatureGrid).get()
+            npInitRho = xp.log10(self._densityGrid).get()
+            npEnergy = specificInternalEnergy.get()
+        else:
+            npInitT = xp.log10(self._temperatureGrid)
+            npInitRho = xp.log10(self._densityGrid)
+            npEnergy = specificInternalEnergy
+
+        initT = torch.from_numpy(npInitT)
+        initRho = torch.from_numpy(npInitRho)
+        energy = torch.from_numpy(npEnergy)
         tRange, dRange = self._make_TD_search_grid(f=f)
         self._ieos.set_bounds(tRange, dRange)
-        self._ieos.temperature_density(energy, initT, initRho)
+        result = self._ieos.temperature_density(energy, initT, initRho)
+        self._temperatureGrid = 10**xp.array(result[:, :, :, 0])
+        self._densityGrid = 10**xp.array(result[:, :, :, 1])
 
-        self._pressureGrid = 1e10 * self._eos.pressure(cp.log10(self._temperatureGrid), cp.log10(self._densityGrid))
+        self._pressureGrid = 1e10 * self._eos.pressure(result[:, :, :, 0], result[:, :, :, 1])
 
-    def Cp(self, delta_t: float = 1e-5):
+    def Cp(self, delta_t: float = 1):
         """
         Computes the specific heat capacity of the star at constant pressure.
 
@@ -452,18 +501,18 @@ class VoxelSphere:
 
         Returns
         -------
-            cp.ndarray: The specific heat capacity of the star at constant pressure.
+            xp.ndarray: The specific heat capacity of the star at constant pressure.
         """
         u1 = self._energyGrid
-        u2 = 1e13 * ((self._differentialMassGrid/1000) * self._eos.energy(cp.log10(self._temperatureGrid + delta_t), cp.log10(self._densityGrid)))
+        u2 = 1e13 * ((self._differentialMassGrid/1000) * self._eos.energy(xp.log10(self._temperatureGrid + delta_t), xp.log10(self._densityGrid)))
         
         cpv = (u2 - u1) / delta_t
         cp_specific = cpv / self._effectiveMolarMass
-        cp_specific[cp_specific == 0] = cp.inf
+        cp_specific[cp_specific == 0] = xp.inf
         return cp_specific
 
     @property
-    def gradT(self) -> Tuple[cp.ndarray, cp.ndarray, cp.ndarray]:
+    def gradT(self) -> Tuple[xp.ndarray, xp.ndarray, xp.ndarray]:
         """
         Computes the temperature gradients in the radial, azimuthal, and altitudinal directions.
 
@@ -472,14 +521,14 @@ class VoxelSphere:
             tuple: A tuple of 3D arrays representing the temperature gradients in the radial, azimuthal, and altitudinal directions.
             The arrays are in the form of (tGradR, tGradTheta, tGradPhi).
         """
-        tGradR, tGradTheta, tGradPhi = cp.gradient(self._temperatureGrid, self.r, self.theta, self.phi)
+        tGradR, tGradTheta, tGradPhi = xp.gradient(self._temperatureGrid, self.r, self.theta, self.phi)
         tGradR[abs(tGradR) < 1e-8] = 0
         tGradTheta[abs(tGradTheta) < 1e-8] = 0
         tGradPhi[abs(tGradPhi) < 1e-8] = 0
         return (tGradR, tGradTheta, tGradPhi)
 
     @property
-    def gradRadEr(self) -> Tuple[cp.ndarray, cp.ndarray, cp.ndarray]:
+    def gradRadEr(self) -> Tuple[xp.ndarray, xp.ndarray, xp.ndarray]:
         """
         Computes the radiative energy gradient.
 
@@ -496,7 +545,7 @@ class VoxelSphere:
         return (delErR, delErTheta, delErPhi)
 
     @property
-    def radiative_energy_flux(self) -> Tuple[cp.ndarray, cp.ndarray, cp.ndarray]:
+    def radiative_energy_flux(self) -> Tuple[xp.ndarray, xp.ndarray, xp.ndarray]:
         """
         Computes the radiative energy flux in the radial, azimuthal, and altitudinal directions.
 
@@ -514,7 +563,7 @@ class VoxelSphere:
         return (fluxGradR, fluxGradTheta, fluxGradPhi)
 
     @property
-    def convective_energy_flux(self) -> Tuple[cp.ndarray, cp.ndarray, cp.ndarray]:
+    def convective_energy_flux(self) -> Tuple[xp.ndarray, xp.ndarray, xp.ndarray]:
         """
         Computes the convective energy flux in the radial, azimuthal, and altitudinal directions.
         We take a mixing length theory approach to compute the convective energy flux.
@@ -542,7 +591,7 @@ class VoxelSphere:
         return (FradR, FradTheta, FradPhi)
 
     @property
-    def convective_overturn_timescale(self) -> Tuple[cp.ndarray, cp.ndarray, cp.ndarray]:
+    def convective_overturn_timescale(self) -> Tuple[xp.ndarray, xp.ndarray, xp.ndarray]:
         """
         Computes the convective overturn timescale in the radial, azimuthal, and altitudinal directions.
         The convective overturn timescale is given by the mixing length divided by the convective velocity.
@@ -557,38 +606,38 @@ class VoxelSphere:
         mixingLength = self.mixing_length
 
         # Deal with singularity at r==0
-        vR[vR == 0] = cp.nan
-        vTheta[vTheta == 0] = cp.nan
-        vPhi[vPhi == 0] = cp.nan
+        vR[vR == 0] = xp.nan
+        vTheta[vTheta == 0] = xp.nan
+        vPhi[vPhi == 0] = xp.nan
         tauR = mixingLength / vR
         tauTheta = mixingLength / vTheta
         tauPhi = mixingLength / vPhi
 
         # Correct the output post singularity to reflect limit
-        tauR[cp.isnan(vR)] = cp.inf
-        tauTheta[cp.isnan(vTheta)] = cp.inf
-        tauPhi[cp.isnan(vPhi)] = cp.inf
+        tauR[xp.isnan(vR)] = xp.inf
+        tauTheta[xp.isnan(vTheta)] = xp.inf
+        tauPhi[xp.isnan(vPhi)] = xp.inf
         return (tauR, tauTheta, tauPhi)
 
     @property
-    def mixing_length(self) -> cp.ndarray:
+    def mixing_length(self) -> xp.ndarray:
         """
         Computes the mixing length for the star.
 
         Returns
         -------
-            cp.ndarray: The mixing length for the star.
+            xp.ndarray: The mixing length for the star.
         """
         return self.alpha*self.pressure_scale_height
 
     @property
-    def pressure_scale_height(self) -> cp.ndarray:
+    def pressure_scale_height(self) -> xp.ndarray:
         """
         Computes the pressure scale height for the star.
 
         Returns
         -------
-            cp.ndarray: The pressure scale height for the star.
+            xp.ndarray: The pressure scale height for the star.
         """
 
         g = self.gravitational_acceleration
@@ -596,7 +645,7 @@ class VoxelSphere:
         return H
 
     @property
-    def convective_velocity(self) -> Tuple[cp.ndarray, cp.ndarray, cp.ndarray]:
+    def convective_velocity(self) -> Tuple[xp.ndarray, xp.ndarray, xp.ndarray]:
         """
         Computes the convective velocity in the radial, azimuthal, and altitudinal directions.
         The convective velocity is given by the mixing length divided by two times the square root of the product of the
@@ -608,45 +657,45 @@ class VoxelSphere:
             The arrays are in the form of (vR, vTheta, vPhi).
         """
         ad = self._adiabatic_grad
-        vc = lambda tg: (self.mixing_length/2) * cp.sqrt(self.gravitational_acceleration * (ad-tg)/self._temperatureGrid)
+        vc = lambda tg: (self.mixing_length/2) * xp.sqrt(self.gravitational_acceleration * (ad-tg)/self._temperatureGrid)
         tGradR, tGradTheta, tGradPhi = self.gradT
         vR = vc(tGradR)
         # vTheta = vc(tGradTheta)
         # vPhi = vc(tGradPhi)
-        vTheta = cp.zeros_like(vR)
-        vPhi = cp.zeros_like(vR)
+        vTheta = xp.zeros_like(vR)
+        vPhi = xp.zeros_like(vR)
 
         return vR, vTheta, vPhi
 
     @property
-    def gravitational_acceleration(self) -> cp.ndarray:
+    def gravitational_acceleration(self) -> xp.ndarray:
         """
         Computes the gravitational acceleration for the star. If the mass grid is zero at a given grid point,
         the gravitational acceleration is set to infinity to deal with the singularity at r=0.
 
         Returns
         -------
-            cp.ndarray: The gravitational acceleration for the star.
+            xp.ndarray: The gravitational acceleration for the star.
         """
         rUse = self.R.copy()
-        rUse[self._massGrid == 0] = cp.inf # deal with the singularity at r=0
+        rUse[self._massGrid == 0] = xp.inf # deal with the singularity at r=0
         return (self.CONST['G'] * self._massGrid)/(rUse**2)
 
     @property
-    def _adiabatic_grad(self) -> cp.ndarray:
+    def _adiabatic_grad(self) -> xp.ndarray:
         """
         Computes the adiabatic gradient for the star.
 
         Returns
         -------
-            cp.ndarray: The adiabatic gradient for the star.
+            xp.ndarray: The adiabatic gradient for the star.
         """
 
         self._delad = (self._pressureGrid) / (self._densityGrid * self.Cp())
         return self._delad
 
     @property
-    def energy_flux(self) -> Tuple[Tuple[cp.ndarray, cp.ndarray, cp.ndarray], Tuple[cp.ndarray, cp.ndarray, cp.ndarray]]:
+    def energy_flux(self) -> Tuple[Tuple[xp.ndarray, xp.ndarray, xp.ndarray], Tuple[xp.ndarray, xp.ndarray, xp.ndarray]]:
         """
         Computes the energy flux in the radial, azimuthal, and altitudinal directions.
 
@@ -660,7 +709,7 @@ class VoxelSphere:
         return (convectiveFlux, radiativeFlux)
 
     @property
-    def flux_divergence(self) -> Tuple[Tuple[cp.ndarray, cp.ndarray, cp.ndarray], Tuple[cp.ndarray, cp.ndarray, cp.ndarray]]:
+    def flux_divergence(self) -> Tuple[Tuple[xp.ndarray, xp.ndarray, xp.ndarray], Tuple[xp.ndarray, xp.ndarray, xp.ndarray]]:
         """
         Computes the divergence of the energy flux in the radial, azimuthal, and altitudinal directions.
 
@@ -684,13 +733,13 @@ class VoxelSphere:
         return ((delFConvR, delFConvTheta, delFConvPhi), (delFRadR, delFRadTheta, delFRadPhi))
 
     @property
-    def dEdt(self) -> cp.ndarray:
+    def dEdt(self) -> xp.ndarray:
         """
         Computes the time derivative of the energy for the star.
 
         Returns
         -------
-            cp.ndarray: The time derivative of the energy for the star.
+            xp.ndarray: The time derivative of the energy for the star.
         """
 
         fluxDivergence = self.flux_divergence
@@ -710,7 +759,7 @@ class VoxelSphere:
             The timestep for the update.
         """
         dE = - self.dEdt * dt
-        self._logger.info(f"Energy changing by an average of {cp.mean(dE)}, {cp.mean(dE/self._energyGrid)*100}%")
+        self._logger.info(f"Energy changing by an average of {xp.mean(dE)}, {xp.mean(dE/self._energyGrid)*100}%")
         self._energyGrid += dE
 
     @property
@@ -723,11 +772,11 @@ class VoxelSphere:
             float: The timestep based on the CFL condition.
         """
         vr, vtheta, vphi = self.convective_velocity
-        max_velocity = max(cp.max(vr), cp.max(vtheta), cp.max(vphi))
+        max_velocity = max(xp.max(vr), xp.max(vtheta), xp.max(vphi))
         cfl_dt = self.cfl_factor * self._dr / max_velocity
         return cfl_dt
 
-    def timestep(self, userdt : float = cp.inf, pbar: bool = False) -> float:
+    def timestep(self, userdt : float = xp.inf) -> float:
         """
         Computes a timestep for the star based on the CFL condition or the user-specified timestep.
         The actual timestep used is the minimum of the CFL timestep and the user-specified timestep, 
@@ -744,9 +793,7 @@ class VoxelSphere:
         Parameters
         ----------
         userdt : float, optional
-            The user-specified timestep. Default is cp.inf.
-        pbar : bool, optional
-            A flag to show a progress bar for the inversion. Default is False.
+            The user-specified timestep. Default is xp.inf.
 
         Returns
         -------
@@ -773,8 +820,8 @@ class VoxelSphere:
         while not converged:
             try:
                 self._update_energy(dt)
-                self._reverse_EOS(pbar=pbar)
-                energyChange = cp.abs(cp.sum(initEnergyGrid - self._energyGrid))/cp.sum(initEnergyGrid)
+                self._reverse_EOS()
+                energyChange = xp.abs(xp.sum(initEnergyGrid - self._energyGrid))/xp.sum(initEnergyGrid)
                 if energyChange > self._tolerances['maxEChange']:
                     raise EnergyConservationError(f"Max change in energy reached {energyChange:0.2E}.")
                 converged = True
@@ -809,35 +856,131 @@ class VoxelSphere:
         with tqdm(total=maxTime, disable=not pbar, desc="Evolution") as pbar:
             while self._t < maxTime:
                 dt = min(dt, maxTime - self._t)
-                useddt = self.timestep(dt)
-                self._logger.evolve(
-                    f"i: {self._evolutionarySteps:<10} DT: {useddt:<10.2e}(s) AGE: {self._t:<10.2e}(s) ETotal: {cp.sum(self._energyGrid):<20.2e}(erg)"
-                )
+                try:
+                    useddt = self.timestep(dt)
+                    self._logger.evolve(
+                        f"step: {self._evolutionarySteps:<10} DT(s): {useddt:<10.2e} AGE(s): {self._t:<10.2e} ETotal(erg): {xp.sum(self._energyGrid):<20.2e}"
+                    )
+                except EOSInverterError as e:
+                    self._logger.error(f"EOS Inverter Error ({e}), stopping evolution")
+                    self._logger.error(f"Final energy bounds are {xp.min(self._energyGrid):0.4E} to {xp.max(self._energyGrid):0.4E}")
+                    if self.fmodelOut:
+                        self.save(f"star_{self._t}.bin")
+                    break
 
                 pbar.update(useddt)
+        if self.fmodelOut:
+            self.save(f"star_{self._t}.bin")
 
     @property
-    def temperature(self) -> cp.ndarray:
+    def temperature(self) -> xp.ndarray:
         """
         Returns the temperature grid for the star.
 
         Returns
         -------
-            cp.ndarray: The temperature grid for the star.
+            xp.ndarray: The temperature grid for the star.
         """
 
-        return self._temperatureGrid
-
+        return self._temperatureGrid.copy()
 
     @property
-    def surface_temperature_profile(self) -> cp.ndarray:
+    def energy(self) -> xp.ndarray:
+        """
+        Returns the energy grid for the star.
+        """
+        return self._energyGrid.copy()
+
+    @property
+    def pressure(self) -> xp.ndarray:
+        """
+        Returns the pressure grid for the star.
+        Returns
+        -------
+            xp.ndarray: The pressure grid for the star.
+        """
+        return self._pressureGrid.copy()
+
+    @property
+    def density(self) -> xp.ndarray:
+        """
+        Returns the density grid for the star.
+        Returns
+        -------
+            xp.ndarray: The density grid for the star.
+        """
+        return self._densityGrid.copy()
+    
+    @property
+    def mass(self) -> xp.ndarray:
+        """
+        Returns the mass grid for the star.
+        Returns
+        -------
+            xp.ndarray: The mass grid for the star.
+        """
+        return self._massGrid.copy()
+
+    @property
+    def surface_temperature_profile(self) -> xp.ndarray:
         """
         Computes the surface temperature profile for the star.
 
         Returns
         -------
-            cp.ndarray: The surface temperature profile for the star.
+            xp.ndarray: The surface temperature profile for the star.
         """
         surface = self.R == self.R.max()
         surfaceTemperature = self._temperatureGrid[surface]
         return surfaceTemperature
+
+    def as_dict(self):
+        """
+        Returns a dictionary representation of the star.
+        Returns
+        -------
+            dict: A dictionary representation of the star.
+        """
+        return {
+            "temperature": self.temperature,
+            "energy": self.energy,
+            "pressure": self.pressure,
+            "density": self.density,
+            "mass": self.mass,
+            "surface_temperature_profile": self.surface_temperature_profile,
+            "r": self.r,
+            "theta": self.theta,
+            "phi": self.phi
+        }
+
+    def as_pandas(self):
+        """
+        Returns a pandas DataFrame representation of the star.
+        Returns
+        -------
+            pandas.DataFrame: A DataFrame representation of the star.
+        """
+        return pd.DataFrame(self.as_dict())
+
+    def save(self, filename: str) -> bool:
+        """
+        Save to a binary file format. Currently the model format is being defined in the joplin notebook I am using to keep track of development.
+
+        Parameters
+        ----------
+        filename : str
+            The filename to save the star to.
+
+        Returns
+        -------
+            bool: A flag indicating if the save was successful.
+        """
+        try:
+            self._modelOutputController.save(filename, self)
+        except ValueError as e:
+            self._logger.error(f"Error saving model: {e}")
+            return False
+        if not os.path.exists(filename):
+            self._logger.error(f"Error saving model: {filename} not found")
+            return False
+        return True
