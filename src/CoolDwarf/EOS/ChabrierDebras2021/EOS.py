@@ -27,7 +27,6 @@ from io import StringIO
 import logging
 
 import torch
-import numpy as np
 
 from CoolDwarf.utils.misc.backend import get_interpolator, get_array_module
 
