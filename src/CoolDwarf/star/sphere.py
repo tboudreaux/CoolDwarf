@@ -470,25 +470,10 @@ class VoxelSphere:
             A factor to limit the search space for the EOS inversion. Default is 0.01.
         """
         specificInternalEnergy = (1000 * self._energyGrid)/(1e13 * self._differentialMassGrid)
-        if CUPY:
-            npInitT = xp.log10(self._temperatureGrid).get()
-            npInitRho = xp.log10(self._densityGrid).get()
-            npEnergy = specificInternalEnergy.get()
-        else:
-            npInitT = xp.log10(self._temperatureGrid)
-            npInitRho = xp.log10(self._densityGrid)
-            npEnergy = specificInternalEnergy
+        newT, newR = self._ieos.temperature_density(specificInternalEnergy, self._temperatureGrid, self._densityGrid, f=f)
+        self._temperatureGrid = newT
+        self._densityGrid = newR
 
-        initT = torch.from_numpy(npInitT)
-        initRho = torch.from_numpy(npInitRho)
-        energy = torch.from_numpy(npEnergy)
-        tRange, dRange = self._make_TD_search_grid(f=f)
-        self._ieos.set_bounds(tRange, dRange)
-        result = self._ieos.temperature_density(energy, initT, initRho)
-        self._temperatureGrid = 10**xp.array(result[:, :, :, 0])
-        self._densityGrid = 10**xp.array(result[:, :, :, 1])
-
-        self._pressureGrid = 1e10 * self._eos.pressure(result[:, :, :, 0], result[:, :, :, 1])
 
     def Cp(self, delta_t: float = 1):
         """
@@ -930,9 +915,62 @@ class VoxelSphere:
         -------
             xp.ndarray: The surface temperature profile for the star.
         """
-        surface = self.R == self.R.max()
-        surfaceTemperature = self._temperatureGrid[surface]
+        surfaceTemperature = self._temperatureGrid[-1, :, :]
         return surfaceTemperature
+
+    def inject_energy(self, i, j, k, dE):
+        """
+        Injects energy into the star at a specified grid point.
+
+        Parameters
+        ----------
+        i : int
+            The radial index of the grid point.
+        j : int
+            The azimuthal index of the grid point.
+        k : int
+            The altitudinal index of the grid point.
+        dE : float
+            The amount of energy to inject into the star.
+        """
+        self._energyGrid[i, j, k] += dE
+
+    def inject_energy_coord(self, r, theta, phi, dE):
+        """
+        Injects energy into the star at a specified coordinate.
+        Parameters
+        ----------
+        r : float
+            The radial coordinate of the grid point.
+        theta : float
+            The azimuthal coordinate of the grid point.
+        phi : float
+            The altitudinal coordinate of the grid point.
+        dE : float
+            The amount of energy to inject into the star.
+        """
+        i, j, k = self._get_grid_index(r, theta, phi)
+        self.inject_energy(i, j, k, dE)
+
+    def _get_grid_index(self, r, theta, phi):
+        """
+        Computes the grid index for a specified coordinate.
+        Parameters
+        ----------
+        r : float
+            The radial coordinate of the grid point.
+        theta : float
+            The azimuthal coordinate of the grid point.
+        phi : float
+            The altitudinal coordinate of the grid point.
+        Returns
+        -------
+            tuple: A tuple of the grid indices for the specified coordinate.
+        """
+        i = xp.abs(self.r - r).argmin()
+        j = xp.abs(self.theta - theta).argmin()
+        k = xp.abs(self.phi - phi).argmin()
+        return i, j, k
 
     def as_dict(self):
         """
