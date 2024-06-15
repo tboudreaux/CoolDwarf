@@ -1,8 +1,26 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 from CoolDwarf.star import VoxelSphere, default_tol
 from CoolDwarf.utils import setup_logging
 from CoolDwarf.EOS import get_eos
 from CoolDwarf.opac import KramerOpac
 from CoolDwarf.utils.output import binmod
+from CoolDwarf.utils.plot import plot_polar_slice
+
+def plot_every_time(sphere):
+    fig, ax = plot_polar_slice(sphere, sphere.density)
+    fig.savefig(f"density-{sphere._evolutionarySteps}.png")
+    plt.close(fig)
+    fig, ax = plot_polar_slice(sphere, sphere.temperature)
+    fig.savefig(f"temperature-{sphere._evolutionarySteps}.png")
+    plt.close(fig)
+    fig, ax = plot_polar_slice(sphere, sphere.pressure)
+    fig.savefig(f"pressure-{sphere._evolutionarySteps}.png")
+    plt.close(fig)
+    fig, ax = plot_polar_slice(sphere, sphere.energy)
+    fig.savefig(f"energy-{sphere._evolutionarySteps}.png")
+    plt.close(fig)
 
 modelWriter = binmod()
 
@@ -16,8 +34,10 @@ sphere = VoxelSphere(
     EOS,
     opac,
     radialResolution=100,
-    altitudinalResolition=100,
-    azimuthalResolition=100,
-    cfl_factor = 0.4,
+    altitudinalResolition=20,
+    azimuthalResolition=20,
+    cfl_factor = 10,
 )
-sphere.evolve(maxTime = 60*60*24, pbar=False, dt=1.5)
+
+# Model Relaxation
+sphere.evolve(maxTime = 60*60, pbar=False, dt=30)
