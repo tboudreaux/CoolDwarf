@@ -1,3 +1,25 @@
+## Unreleased
+
+### BREAKING CHANGE
+
+- Methods from the EOS inversion method have been dropped and so if they are called anymore the code will fail
+
+### Feat
+
+- **sphere.py**: added evolution callback function
+- **EOSInverter.py**: added iterative energy error improvment to arbitary tolerance
+- **EOSInverter.py**: New inversion method
+
+### Fix
+
+- **sphere.py**: updated docstrings with more examples
+- **plot2d.py**: fixed a bug with backend selection
+- **sphere.py**: temp and density now being saved after EOS inversion
+
+### Refactor
+
+- **plot**: brought plot module in line with multiple backend support
+
 ## 0.9.0 (2024-06-12)
 
 ### Feat
