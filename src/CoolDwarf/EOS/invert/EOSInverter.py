@@ -10,34 +10,22 @@ limited in size by some expected maximum deviation from the initial guess.
 
 Dependencies
 ------------
-- cupy
-- torch
-- CoolDwarf.err
+- CoolDwarf.utils.misc.backend
 
 Example usage
 -------------
 >>> from CoolDwarf.EOS.invert.EOSInverter import Inverter
 >>> from CoolDwarf.EOS.ChabrierDebras2021.EOS import CH21EOS
 >>> eos = CH21EOS("path/to/eos/table")
->>> inverter = Inverter(eos, TRange, RhoRange)
+>>> inverter = Inverter(eos)
 >>> logTInit, logRhoInit = 7.0, -2.0
->>> newTRange = (6.0, 8.0)
->>> newRhoRange = (-3.0, 0.0)
 >>> energy = 1e15
->>> newBounds = (newTRange, newRhoRange)
->>> inverter.set_bounds(newBounds)
 >>> logT, logRho = inverter.temperature_density(energy, logTInit, logRhoInit)
 """
-import torch
-import torch.optim as optim
 
-from CoolDwarf.err import EOSInverterError
 from CoolDwarf.utils.misc.backend import get_array_module
 
 xp, CUPY = get_array_module()
-
-def cupy_to_torch(cupy_array):
-    return torch.as_tensor(cupy_array.get(), device='cuda')
 
 class Inverter:
     """
@@ -53,28 +41,16 @@ class Inverter:
     ----------
     EOS : EOS
         EOS object to invert
-    TRange : tuple
-        Tuple containing the minimum and maximum temperature (log10(T)) in the EOS table
-    RhoRange : tuple
-        Tuple containing the minimum and maximum density (log10(ρ)) in the EOS table
 
     Attributes
     ----------
     EOS : EOS
         EOS object to invert
-    _TRange : tuple
-        Tuple containing the minimum and maximum temperature (log10(T)) in the EOS table
-    _RhoRange : tuple  
-        Tuple containing the minimum and maximum density (log10(ρ)) in the EOS table
-    _bounds : tuple
-        Tuple containing the TRange and RhoRange
     
     Methods
     -------
-    temperature_density(energy, logTInit, logRhoInit)
+    temperature_density(energy, logTInit, logRhoInit,f=0.01)
         Inverts the EOS to find the temperature and density that gives the target energy
-    set_bounds(newBounds)
-        Sets the bounds for the inversion
     """
     def __init__(self, EOS):
         """
@@ -84,86 +60,103 @@ class Inverter:
         ----------
         EOS : EOS
             EOS object to invert
-        TRange : tuple
-            Tuple containing the minimum and maximum temperature (log10(T)) in the EOS table
-        RhoRange : tuple
-            Tuple containing the minimum and maximum density (log10(ρ)) in the EOS table
         """
         self.EOS = EOS
-        self._bounds = None
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    def temperature_density(self, energy: torch.Tensor, logTInit: torch.Tensor, logRhoInit: torch.Tensor, lr: float = 0.01, num_epochs: int = 1000) -> torch.Tensor:
-        if self._bounds != None:
-            logTInit = logTInit.to(self.device).requires_grad_(True)
-            logRhoInit = logRhoInit.to(self.device).requires_grad_(True)
-            energy = energy.to(self.device).requires_grad_(True)
-
-            optimizer = optim.Adam([logTInit, logRhoInit], lr=lr)
-
-            logTInitFlat = logTInit.flatten()
-            logRhoInitFlat = logRhoInit.flatten()
-            energyFlat = energy.flatten()
-
-            # Reshape bounds to match the flattened grid shape
-            T_min_bounds = self._bounds[0, 0].flatten().to(self.device)
-            T_max_bounds = self._bounds[0, 1].flatten().to(self.device)
-            Rho_min_bounds = self._bounds[1, 0].flatten().to(self.device)
-            Rho_max_bounds = self._bounds[1, 1].flatten().to(self.device)
-
-            for epoch in range(num_epochs):
-                optimizer.zero_grad()
-                loss = self._loss(logTInitFlat, logRhoInitFlat, energyFlat)
-                loss.backward()
-                optimizer.step()
-
-                # Apply bounds for each grid point
-                with torch.no_grad():
-                    logTInitFlat.data = torch.max(logTInitFlat, T_min_bounds)
-                    logTInitFlat.data = torch.min(logTInitFlat, T_max_bounds)
-                    logRhoInitFlat.data = torch.max(logRhoInitFlat, Rho_min_bounds)
-                    logRhoInitFlat.data = torch.min(logRhoInitFlat, Rho_max_bounds)
-
-                    if loss.item() < 1e-4:
-                        break
-
-            if loss.item() >= 1e-4:
-                raise EOSInverterError(f"No Inversion found for energy within the given bounds")
-
-            # Reshape the result back to the original grid shape
-            logT_result = logTInitFlat.view(logTInit.shape)
-            logRho_result = logRhoInitFlat.view(logRhoInit.shape)
-            output = torch.stack([logT_result, logRho_result], dim=-1).detach().cpu()
-
-            return output.numpy()
-        else:
-            raise RuntimeError("Bounds not set for the EOS Inverter")
-
-    def _loss(self, logT: torch.Tensor, logRho: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    
+    def temperature_density(self, energy: xp.ndarray, temperature: xp.ndarray, density: xp.ndarray, f=0.01) -> xp.ndarray:
         """
-        Simple loss function to minimize the difference between the target energy and the EOS energy
+        Given the target energy, temperature and density, find the temperature and density that gives the target energy.
+        This is dones by makining the assumption that the EOS is linear in the range of temperatures and densities given by the bounds.
+        If this is true then a function rho(E) at some constant temperature is well defined.
+
+        We define two functions: rho(E)_{T0} and rho(E)_{T1} as the density as a function of energy at two constant 
+        temperatures. These temperatures are taken as some fraction (f) less than the initial temperature guess and
+        that same fraction greater than the initial temperature guess. 
+
+
+        Once these two linear functions have been found we evaluate them at the target energy.
+        This gives us the density which results in the target energy at two different constant temperaratures. 
+        We can then fit a third linear function rho(T) using these two points to pull out a linear approximation for
+        the isoenergy curve over the search domain.
+
+        The question then becomes: where along this isoenergy curve will the grid point move to. Any temperature
+        and density on that curve will result in the same final energy. We can think here about some 
+        arbitrary path from the initial conditions to a point on the isoenergy curve. Every path has some
+        path integral in energy. The most likeley destination is the path which minimizes the path integral.
+
+        Because there is an infinite search space and we do not have an analytic function we need to make some simplifying
+        assumptions to actually solve this. We observe that over a limited search domain the equation of state
+        is continous and smooth. Further, it monotonically increases with temperature and density. This means that
+        the path which minimizes the path integral of energy should be the shortest distance (in temperature, density space)
+        between the initial condition and the isoenergy curve.
+
+        Finding this path is then as simple as finding the line perpendicular to the isoenergy curve which pases through 
+        the initial condition and then solving for where this line is equal to the isoenercy curve.
+
+        The procedure described above is preformed simultaneously for all grid points and has been formulated
+        as a pure matrix problem. Because of this is is very efficient. 
+
+        Notes
+        -----
+        If you are using an equation of state which is not as well behaved as the Chabrier Debras 2021 EOS
+        the assumptions I made here may not work. Notebaly, you will need to check if, within the search domain, the energy varies linearly with density
+        at a constant temperature. And if, again within the search domain, if the isoenercy curve is linear
+        in density and temperature space. If these are true then the algorithm to find the isoenergy curve should still
+        be valid. Secondly, you will need to validate that the shortest path between the initial condition and the isoenergy
+        curve is the one which minimizes the energy path integral. If that is also true then this method should reliably find 
+        the target energy.
 
         Parameters
         ----------
-        logT : torch.Tensor
-            Tensor containing the temperature (log10(T)) to evaluate the loss function at
-        logRho : torch.Tensor
-            Tensor containing the density (log10(ρ)) to evaluate the loss function at
-        target : torch.Tensor
+        energy : xp.ndarray
             Target energy to invert the EOS to
-        
+        temperature : xp.ndarray
+            Initial guess for the temperature. This should be in linear space NOT log space.
+        density : xp.ndarray
+            Initial guess for the density. This should be in linear space NOT in log space.
+        f : float
+            Fraction of the initial guess to use for the bounds
+
+
         Returns
         -------
-        torch.Tensor
-            Loss function value
+        xp.ndarray
+            New temperature
+        xp.ndarray
+            New density
         """
-        energy = self.EOS.energy_torch(logT, logRho)
-        loss = torch.abs(energy - target).mean()
-        return loss
+        # Define the found bounds of the search domain
+        tD = xp.array([temperature - f * temperature, temperature + f * temperature])
+        rD = xp.array([density - f*density, density + f * density])
 
-    def set_bounds(self, tRange, rRange):
-        bounds = xp.array([[tRange[0], tRange[1]], [rRange[0], rRange[1]]])
-        if CUPY:
-            self._bounds = torch.tensor(bounds.get(), device=self.device)
-        else:
-            self._bounds = torch.tensor(bounds, device=self.device)
+        # Use broadcasting to simulate a meshgrid
+        tDb = tD[xp.newaxis, :]
+        rDb = rD[:, xp.newaxis]
+        TD = tDb + rDb * 0  
+        RD = rDb + tDb * 0
+        U = self.EOS.energy(xp.log10(TD), xp.log10(RD))
+
+        # Find the slopes and intercepts of both the function rho(E)_{T0,T1} simultaniously 
+        Sn = xp.diff(rD.T).T
+        Sd = xp.diff(U, axis=1)[0]
+        S = Sn/Sd
+        B = rD[0] - S * U[0]
+
+        # Solve for what densities coorespond to the target energy on thos two curves
+        rp = S * energy + B
+
+        # Connect a line between those two points to draw the isoenergy curve
+        Sfn = xp.diff(rp, axis=0)
+        Sfd = xp.diff(tD, axis=0)
+        Sf = Sfn/Sfd
+        Bf = rp[0] - Sf * tD[0]
+
+        # Find the line perpendicular to the isoenergy curve which also passes through the initial condition
+        Sp = -1/Sf
+        Bp = density - Sp * temperature
+
+        # Solve for the intersection of the two lines
+        newT = (Bp - Bf)/(Sf - Sp)
+        newR = Sf * newT + Bf
+        return newT, newR
+
