@@ -473,6 +473,7 @@ class VoxelSphere:
         newT, newR = self._ieos.temperature_density(specificInternalEnergy, self._temperatureGrid, self._densityGrid, f=f)
         self._temperatureGrid = newT
         self._densityGrid = newR
+        self._pressureGrid = 1e10 * self._eos.pressure(xp.log10(self._temperatureGrid), xp.log10(self._densityGrid))
 
 
     def Cp(self, delta_t: float = 1):
@@ -824,7 +825,7 @@ class VoxelSphere:
         self._t += dt
         return dt
 
-    def evolve(self, maxTime : float = 3.154e+7, dt : float = 86400, pbar=False):
+    def evolve(self, maxTime : float = 3.154e+7, dt : float = 86400, pbar=False, callback=lambda s: None, cbc=1):
         """
         Evolves the star over a specified time period using a specified timestep.
 
@@ -836,6 +837,11 @@ class VoxelSphere:
             The timestep to use for the evolution. Default is 86400.
         pbar : bool, optional
             Display a progress bar for the evolution. Default is False.
+        callback : function, optional
+            A callback function to call at each timestep. Default is a function that does nothing.
+        cbc : int, optional
+            The cadence at which to call the callback function. 1 meaning every time step. 2 would
+            be every other timestep and so on...
         """
         self._logger.info(f"Evolution started with dt: {dt}, maxTime: {maxTime}")
         with tqdm(total=maxTime, disable=not pbar, desc="Evolution") as pbar:
@@ -852,6 +858,8 @@ class VoxelSphere:
                     if self.fmodelOut:
                         self.save(f"star_{self._t}.bin")
                     break
+                if self._evolutionarySteps % cbc == 0:
+                    callback(self)
 
                 pbar.update(useddt)
         if self.fmodelOut:
