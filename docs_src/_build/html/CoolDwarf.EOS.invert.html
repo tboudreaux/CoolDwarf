@@ -49,6 +49,7 @@ limited in size by some expected maximum deviation from the initial guess.</p>
 <h3>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>CoolDwarf.utils.misc.backend</p></li>
+<li><p>CoolDwarf.err.EOSInverterError</p></li>
 </ul>
 </section>
 <section id="example-usage">
@@ -65,7 +66,7 @@ limited in size by some expected maximum deviation from the initial guess.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.Inverter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.EOS.invert.EOSInverter.</span></span><span class="sig-name descname"><span class="pre">Inverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EOS</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.EOS.invert.EOSInverter.</span></span><span class="sig-name descname"><span class="pre">Inverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EOS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxDepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Inverter – Inverter class for EOS tables</p>
 <p>This class is designed to be used with the CoolDwarf Stellar Structure code, and provides the necessary functions
@@ -78,11 +79,19 @@ and limited in size by some expected maximum deviation from the initial guess.</
 <dd class="field-odd"><dl class="simple">
 <dt><strong>EOS</strong><span class="classifier">EOS</span></dt><dd><p>EOS object to invert</p>
 </dd>
+<dt><strong>tol</strong><span class="classifier">float, default=1e-6</span></dt><dd><p>The minimum allowed median fractional energy error</p>
+</dd>
+<dt><strong>maxDepth</strong><span class="classifier">int, default=1000</span></dt><dd><p>The maximum number of recursions allowed.</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Attributes<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>EOS</strong><span class="classifier">EOS</span></dt><dd><p>EOS object to invert</p>
+</dd>
+<dt><strong>tol</strong><span class="classifier">float</span></dt><dd><p>The minimum allowed median fractional energy error</p>
+</dd>
+<dt><strong>maxDepth</strong><span class="classifier">int</span></dt><dd><p>The maximum number of recursions allowed</p>
 </dd>
 </dl>
 </dd>
@@ -97,7 +106,7 @@ and limited in size by some expected maximum deviation from the initial guess.</
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density">
-<span class="sig-name descname"><span class="pre">temperature_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">temperature_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_rDepth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density" title="Link to this definition">¶</a></dt>
 <dd><p>Given the target energy, temperature and density, find the temperature and density that gives the target energy.
 This is dones by makining the assumption that the EOS is linear in the range of temperatures and densities given by the bounds.
 If this is true then a function rho(E) at some constant temperature is well defined.</p>
@@ -119,6 +128,11 @@ the path which minimizes the path integral of energy should be the shortest dist
 between the initial condition and the isoenergy curve.</p>
 <p>Finding this path is then as simple as finding the line perpendicular to the isoenergy curve which pases through 
 the initial condition and then solving for where this line is equal to the isoenercy curve.</p>
+<p>Once we have found the point on the isoenergy curve which is closest to the initial condition we can then
+evaluate the EOS at that point to find the final energy. We then check the error against the target energy
+and if the error is greater than the tolerance we recurse with a smaller search domain and
+a new initial guess for the temperature and density based on the previous optimization. This continues
+until the error is less than the tolerance or the maximum recursion depth is reached.</p>
 <p>The procedure described above is preformed simultaneously for all grid points and has been formulated
 as a pure matrix problem. Because of this is is very efficient.</p>
 <dl class="field-list simple">
@@ -130,7 +144,9 @@ as a pure matrix problem. Because of this is is very efficient.</p>
 </dd>
 <dt><strong>density</strong><span class="classifier">xp.ndarray</span></dt><dd><p>Initial guess for the density. This should be in linear space NOT in log space.</p>
 </dd>
-<dt><strong>f</strong><span class="classifier">float</span></dt><dd><p>Fraction of the initial guess to use for the bounds</p>
+<dt><strong>f</strong><span class="classifier">float, default=0.01</span></dt><dd><p>Fraction of the initial guess to use for the bounds</p>
+</dd>
+<dt><strong>_rDepth</strong><span class="classifier">int, default=0</span></dt><dd><p>Current recursion depth</p>
 </dd>
 </dl>
 </dd>
@@ -139,6 +155,12 @@ as a pure matrix problem. Because of this is is very efficient.</p>
 <dt>xp.ndarray</dt><dd><p>New temperature</p>
 </dd>
 <dt>xp.ndarray</dt><dd><p>New density</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>EOSInverterError</dt><dd><p>If the maximum recursion depth is reached before the error tolerance is met</p>
 </dd>
 </dl>
 </dd>
