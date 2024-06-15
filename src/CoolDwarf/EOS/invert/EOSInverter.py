@@ -11,6 +11,7 @@ limited in size by some expected maximum deviation from the initial guess.
 Dependencies
 ------------
 - CoolDwarf.utils.misc.backend
+- CoolDwarf.err.EOSInverterError
 
 Example usage
 -------------
@@ -22,8 +23,11 @@ Example usage
 >>> energy = 1e15
 >>> logT, logRho = inverter.temperature_density(energy, logTInit, logRhoInit)
 """
+import logging
+import sys
 
 from CoolDwarf.utils.misc.backend import get_array_module
+from CoolDwarf.err import EOSInverterError
 
 xp, CUPY = get_array_module()
 
@@ -41,18 +45,26 @@ class Inverter:
     ----------
     EOS : EOS
         EOS object to invert
+    tol : float, default=1e-6
+        The minimum allowed median fractional energy error
+    maxDepth : int, default=1000
+        The maximum number of recursions allowed.
 
     Attributes
     ----------
     EOS : EOS
         EOS object to invert
+    tol : float
+        The minimum allowed median fractional energy error
+    maxDepth : int
+        The maximum number of recursions allowed
     
     Methods
     -------
     temperature_density(energy, logTInit, logRhoInit,f=0.01)
         Inverts the EOS to find the temperature and density that gives the target energy
     """
-    def __init__(self, EOS):
+    def __init__(self, EOS, tol=1e-7, maxDepth=1000):
         """
         Initialize the Inverter class
 
@@ -60,10 +72,18 @@ class Inverter:
         ----------
         EOS : EOS
             EOS object to invert
+        tol : float
+            The minimum allowed median fractional energy error
+        maxDepth : int
+            The maximum number of recursions allowed
+
         """
         self.EOS = EOS
+        self.tol = tol
+        self.maxDepth = maxDepth
+        self._logger = logging.getLogger("CoolDwarf.EOS.Inverter")
     
-    def temperature_density(self, energy: xp.ndarray, temperature: xp.ndarray, density: xp.ndarray, f=0.01) -> xp.ndarray:
+    def temperature_density(self, energy: xp.ndarray, temperature: xp.ndarray, density: xp.ndarray, f : float=0.01, _rDepth : int = 0) -> xp.ndarray:
         """
         Given the target energy, temperature and density, find the temperature and density that gives the target energy.
         This is dones by makining the assumption that the EOS is linear in the range of temperatures and densities given by the bounds.
@@ -93,6 +113,12 @@ class Inverter:
         Finding this path is then as simple as finding the line perpendicular to the isoenergy curve which pases through 
         the initial condition and then solving for where this line is equal to the isoenercy curve.
 
+        Once we have found the point on the isoenergy curve which is closest to the initial condition we can then
+        evaluate the EOS at that point to find the final energy. We then check the error against the target energy
+        and if the error is greater than the tolerance we recurse with a smaller search domain and
+        a new initial guess for the temperature and density based on the previous optimization. This continues
+        until the error is less than the tolerance or the maximum recursion depth is reached.
+
         The procedure described above is preformed simultaneously for all grid points and has been formulated
         as a pure matrix problem. Because of this is is very efficient. 
 
@@ -114,9 +140,10 @@ class Inverter:
             Initial guess for the temperature. This should be in linear space NOT log space.
         density : xp.ndarray
             Initial guess for the density. This should be in linear space NOT in log space.
-        f : float
+        f : float, default=0.01
             Fraction of the initial guess to use for the bounds
-
+        _rDepth : int, default=0
+            Current recursion depth
 
         Returns
         -------
@@ -124,6 +151,11 @@ class Inverter:
             New temperature
         xp.ndarray
             New density
+
+        Raises
+        ------
+        EOSInverterError
+            If the maximum recursion depth is reached before the error tolerance is met
         """
         # Define the found bounds of the search domain
         tD = xp.array([temperature - f * temperature, temperature + f * temperature])
@@ -135,6 +167,7 @@ class Inverter:
         TD = tDb + rDb * 0  
         RD = rDb + tDb * 0
         U = self.EOS.energy(xp.log10(TD), xp.log10(RD))
+        U[0, 1], U[1, 0] = U[1, 0], U[0, 1]
 
         # Find the slopes and intercepts of both the function rho(E)_{T0,T1} simultaniously 
         Sn = xp.diff(rD.T).T
@@ -158,5 +191,15 @@ class Inverter:
         # Solve for the intersection of the two lines
         newT = (Bp - Bf)/(Sf - Sp)
         newR = Sf * newT + Bf
-        return newT, newR
+        newT, newR = newT[0], newR[0]
 
+        finalEnergy = self.EOS.energy(xp.log10(newT), xp.log10(newR))
+        err = abs((finalEnergy-energy)/energy)
+        if xp.any(err > self.tol) and _rDepth < self.maxDepth:
+            self._logger.debug(f"Inverter recusring to reach error tolerance. Mean Error: {err.mean()}, target tolerance: {self.tol}")
+            newT, newR = self.temperature_density(energy, newT, newR, f=f/2, _rDepth = _rDepth + 1)
+        if _rDepth >= self.maxDepth:
+            self._logger.error("Inverter reached maximum recursion depth before reaching error tolerance.")
+            raise EOSInverterError("Inverter reached maximum recursion depth before reaching error tolerance.")
+        self._logger.info(f"Final mean/median/max EOS inversion fractional error: {err.mean()}, {xp.median(err)}, {err.max()}")
+        return newT, newR
