@@ -1,4 +1,4 @@
-![Cool Dwarf Logo](assets/logo/logo-large.png)
+![Cool Dwarf Logo](assets/logo/logo-medium.png)
 # CoolDwarf
 
 CoolDwarf is a dynamic brown dwarf cooling model meant to cover short time scales with high accuracy. That is to say 
