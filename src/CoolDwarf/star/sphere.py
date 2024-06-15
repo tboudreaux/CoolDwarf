@@ -450,24 +450,13 @@ class VoxelSphere:
 
     def _reverse_EOS(self, f: float = 0.01):
         """
-        Computes the temperature and density grids from the energy grid using the inverted EOS.
-        The first step here is for the energy grid (which is in the form of internal energy at each
-        grid point) to be converted to specific internal energy (internal energy per unit mass).
-
-        The temperature and density grids are then iterated over, and the inverted EOS is used to
-        compute the temperature and density at each grid point. The temperature and density grids are
-        then updated with the computed values.
-
-        At each grid point, the temperature and density are computed by inverting the EOS using the
-        specific internal energy, temperature, and density at that grid point. The bounds for the
-        inversion are set based on the temperature and density grids at that point.
-
-        Finally, the pressure grid is updated using the new temperature and density grids.
+        Uses the EOS inverter to compute the temperature and density grids from the energy grid.
+        See the Inverter class for more details on the inversion process.
 
         Parameters
         ----------
-        f : float, optional
-            A factor to limit the search space for the EOS inversion. Default is 0.01.
+        f : float, default=0.01
+            A factor to limit the search space for the EOS inversion.
         """
         specificInternalEnergy = (1000 * self._energyGrid)/(1e13 * self._differentialMassGrid)
         newT, newR = self._ieos.temperature_density(specificInternalEnergy, self._temperatureGrid, self._densityGrid, f=f)
@@ -825,7 +814,7 @@ class VoxelSphere:
         self._t += dt
         return dt
 
-    def evolve(self, maxTime : float = 3.154e+7, dt : float = 86400, pbar=False, callback=lambda s: None, cbc=1):
+    def evolve(self, maxTime : float = 3.154e+7, dt : float = 86400, pbar=False, callback=lambda s: None, cbc=1, cargs: tuple = ()):
         """
         Evolves the star over a specified time period using a specified timestep.
 
@@ -839,9 +828,22 @@ class VoxelSphere:
             Display a progress bar for the evolution. Default is False.
         callback : function, optional
             A callback function to call at each timestep. Default is a function that does nothing.
+            Function will be called after each timestep. The star object will be passed as an argument.
+            The function signature must be callback(star, *args).
         cbc : int, optional
             The cadence at which to call the callback function. 1 meaning every time step. 2 would
             be every other timestep and so on...
+        cargs : tuple, optional
+            Additional arguments to pass to the callback function.
+
+        Example Usage
+        -------------
+        >>> from CoolDwarf.star.sphere import VoxelSphere
+        >>> from CoolDwarf.utils.io import binmod
+        >>> star = VoxelSphere(...)
+        >>> star.evolve()
+        >>> modelReader = binmod()
+        >>> modelReader.read("star.bin")
         """
         self._logger.info(f"Evolution started with dt: {dt}, maxTime: {maxTime}")
         with tqdm(total=maxTime, disable=not pbar, desc="Evolution") as pbar:
@@ -859,7 +861,7 @@ class VoxelSphere:
                         self.save(f"star_{self._t}.bin")
                     break
                 if self._evolutionarySteps % cbc == 0:
-                    callback(self)
+                    callback(self, *cargs)
 
                 pbar.update(useddt)
         if self.fmodelOut:
