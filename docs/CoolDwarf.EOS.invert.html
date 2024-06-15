@@ -48,9 +48,7 @@ limited in size by some expected maximum deviation from the initial guess.</p>
 <section id="dependencies">
 <h3>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>cupy</p></li>
-<li><p>torch</p></li>
-<li><p>CoolDwarf.err</p></li>
+<li><p>CoolDwarf.utils.misc.backend</p></li>
 </ul>
 </section>
 <section id="example-usage">
@@ -58,13 +56,9 @@ limited in size by some expected maximum deviation from the initial guess.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CoolDwarf.EOS.invert.EOSInverter</span> <span class="kn">import</span> <span class="n">Inverter</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CoolDwarf.EOS.ChabrierDebras2021.EOS</span> <span class="kn">import</span> <span class="n">CH21EOS</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eos</span> <span class="o">=</span> <span class="n">CH21EOS</span><span class="p">(</span><span class="s2">&quot;path/to/eos/table&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">inverter</span> <span class="o">=</span> <span class="n">Inverter</span><span class="p">(</span><span class="n">eos</span><span class="p">,</span> <span class="n">TRange</span><span class="p">,</span> <span class="n">RhoRange</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inverter</span> <span class="o">=</span> <span class="n">Inverter</span><span class="p">(</span><span class="n">eos</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">logTInit</span><span class="p">,</span> <span class="n">logRhoInit</span> <span class="o">=</span> <span class="mf">7.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">newTRange</span> <span class="o">=</span> <span class="p">(</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">newRhoRange</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">energy</span> <span class="o">=</span> <span class="mf">1e15</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">newBounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">newTRange</span><span class="p">,</span> <span class="n">newRhoRange</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">inverter</span><span class="o">.</span><span class="n">set_bounds</span><span class="p">(</span><span class="n">newBounds</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">logT</span><span class="p">,</span> <span class="n">logRho</span> <span class="o">=</span> <span class="n">inverter</span><span class="o">.</span><span class="n">temperature_density</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="n">logTInit</span><span class="p">,</span> <span class="n">logRhoInit</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -84,21 +78,11 @@ and limited in size by some expected maximum deviation from the initial guess.</
 <dd class="field-odd"><dl class="simple">
 <dt><strong>EOS</strong><span class="classifier">EOS</span></dt><dd><p>EOS object to invert</p>
 </dd>
-<dt><strong>TRange</strong><span class="classifier">tuple</span></dt><dd><p>Tuple containing the minimum and maximum temperature (log10(T)) in the EOS table</p>
-</dd>
-<dt><strong>RhoRange</strong><span class="classifier">tuple</span></dt><dd><p>Tuple containing the minimum and maximum density (log10(ρ)) in the EOS table</p>
-</dd>
 </dl>
 </dd>
 <dt class="field-even">Attributes<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>EOS</strong><span class="classifier">EOS</span></dt><dd><p>EOS object to invert</p>
-</dd>
-<dt><strong>_TRange</strong><span class="classifier">tuple</span></dt><dd><p>Tuple containing the minimum and maximum temperature (log10(T)) in the EOS table</p>
-</dd>
-<dt><strong>_RhoRange</strong><span class="classifier">tuple</span></dt><dd><p>Tuple containing the minimum and maximum density (log10(ρ)) in the EOS table</p>
-</dd>
-<dt><strong>_bounds</strong><span class="classifier">tuple</span></dt><dd><p>Tuple containing the TRange and RhoRange</p>
 </dd>
 </dl>
 </dd>
@@ -106,30 +90,70 @@ and limited in size by some expected maximum deviation from the initial guess.</
 <p class="rubric">Methods</p>
 <table class="docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><strong>temperature_density(energy, logTInit, logRhoInit)</strong></p></td>
+<tr class="row-odd"><td><p><strong>temperature_density(energy, logTInit, logRhoInit,f=0.01)</strong></p></td>
 <td><p>Inverts the EOS to find the temperature and density that gives the target energy</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>set_bounds(newBounds)</strong></p></td>
-<td><p>Sets the bounds for the inversion</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.Inverter.set_bounds">
-<span class="sig-name descname"><span class="pre">set_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tRange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rRange</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.set_bounds" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density">
-<span class="sig-name descname"><span class="pre">temperature_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logTInit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logRhoInit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epochs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<span class="sig-name descname"><span class="pre">temperature_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.Inverter.temperature_density" title="Link to this definition">¶</a></dt>
+<dd><p>Given the target energy, temperature and density, find the temperature and density that gives the target energy.
+This is dones by makining the assumption that the EOS is linear in the range of temperatures and densities given by the bounds.
+If this is true then a function rho(E) at some constant temperature is well defined.</p>
+<p>We define two functions: rho(E)_{T0} and rho(E)_{T1} as the density as a function of energy at two constant 
+temperatures. These temperatures are taken as some fraction (f) less than the initial temperature guess and
+that same fraction greater than the initial temperature guess.</p>
+<p>Once these two linear functions have been found we evaluate them at the target energy.
+This gives us the density which results in the target energy at two different constant temperaratures. 
+We can then fit a third linear function rho(T) using these two points to pull out a linear approximation for
+the isoenergy curve over the search domain.</p>
+<p>The question then becomes: where along this isoenergy curve will the grid point move to. Any temperature
+and density on that curve will result in the same final energy. We can think here about some 
+arbitrary path from the initial conditions to a point on the isoenergy curve. Every path has some
+path integral in energy. The most likeley destination is the path which minimizes the path integral.</p>
+<p>Because there is an infinite search space and we do not have an analytic function we need to make some simplifying
+assumptions to actually solve this. We observe that over a limited search domain the equation of state
+is continous and smooth. Further, it monotonically increases with temperature and density. This means that
+the path which minimizes the path integral of energy should be the shortest distance (in temperature, density space)
+between the initial condition and the isoenergy curve.</p>
+<p>Finding this path is then as simple as finding the line perpendicular to the isoenergy curve which pases through 
+the initial condition and then solving for where this line is equal to the isoenercy curve.</p>
+<p>The procedure described above is preformed simultaneously for all grid points and has been formulated
+as a pure matrix problem. Because of this is is very efficient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>energy</strong><span class="classifier">xp.ndarray</span></dt><dd><p>Target energy to invert the EOS to</p>
+</dd>
+<dt><strong>temperature</strong><span class="classifier">xp.ndarray</span></dt><dd><p>Initial guess for the temperature. This should be in linear space NOT log space.</p>
+</dd>
+<dt><strong>density</strong><span class="classifier">xp.ndarray</span></dt><dd><p>Initial guess for the density. This should be in linear space NOT in log space.</p>
+</dd>
+<dt><strong>f</strong><span class="classifier">float</span></dt><dd><p>Fraction of the initial guess to use for the bounds</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>xp.ndarray</dt><dd><p>New temperature</p>
+</dd>
+<dt>xp.ndarray</dt><dd><p>New density</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If you are using an equation of state which is not as well behaved as the Chabrier Debras 2021 EOS
+the assumptions I made here may not work. Notebaly, you will need to check if, within the search domain, the energy varies linearly with density
+at a constant temperature. And if, again within the search domain, if the isoenercy curve is linear
+in density and temperature space. If these are true then the algorithm to find the isoenergy curve should still
+be valid. Secondly, you will need to validate that the shortest path between the initial condition and the isoenergy
+curve is the one which minimizes the energy path integral. If that is also true then this method should reliably find 
+the target energy.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="CoolDwarf.EOS.invert.EOSInverter.cupy_to_torch">
-<span class="sig-prename descclassname"><span class="pre">CoolDwarf.EOS.invert.EOSInverter.</span></span><span class="sig-name descname"><span class="pre">cupy_to_torch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cupy_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.EOS.invert.EOSInverter.cupy_to_torch" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
 </section>
 <section id="module-CoolDwarf.EOS.invert">
@@ -158,7 +182,13 @@ and limited in size by some expected maximum deviation from the initial guess.</
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="CoolDwarf.EOS.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.EOS.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.EOS.html#module-CoolDwarf.EOS.EOS">CoolDwarf.EOS.EOS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.EOS.html#module-CoolDwarf.EOS">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CoolDwarf.EOS.invert</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-CoolDwarf.EOS.invert.EOSInverter">CoolDwarf.EOS.invert.EOSInverter module</a></li>

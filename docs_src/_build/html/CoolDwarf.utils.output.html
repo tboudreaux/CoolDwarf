@@ -37,101 +37,27 @@
 </section>
 <section id="module-CoolDwarf.utils.output.binmod">
 <span id="cooldwarf-utils-output-binmod-module"></span><h2>CoolDwarf.utils.output.binmod module<a class="headerlink" href="#module-CoolDwarf.utils.output.binmod" title="Link to this heading">¶</a></h2>
-<p>binmod.py – Binary file format for CoolDwarf output</p>
-<p>This module provides a binary file format for CoolDwarf output. The format is
-designed to be compact and fast to read and write. The format is as follows:</p>
-<ul class="simple">
-<li><p>SOH (Hex: 1)</p></li>
-<li><p>RS (Hex 1E)</p></li>
-<li><p>If there are then 2 null bytes then there are checksums included (112 Bytes long). If there is one null byte then there are no checksums included</p></li>
-<li><p>16 bytes of md5 sum for temperature array</p></li>
-<li><p>16 bytes of md5 sum for energy array</p></li>
-<li><p>16 bytes of md5 sum for pressure array</p></li>
-<li><p>16 bytes of md5 sum for density array</p></li>
-<li><p>16 bytes of md5 sum for radius</p></li>
-<li><p>16 bytes of md5 sum for theta</p></li>
-<li><p>16 bytes of md5 sum for phi</p></li>
-<li><p>ENQ (regardless of if there are checksums) (Hex: 5)</p></li>
-<li><p>SOH (Hex: 1)</p></li>
-<li><p>4 bytes for radiall resolution (int)</p></li>
-<li><p>4 bytes for azimuthal resolution (int)</p></li>
-<li><p>4 bytes for altitudinal resolution (int)</p></li>
-<li><p>8 bytes for radius</p></li>
-<li><p>8 bytes for mass</p></li>
-<li><p>8 bytes for alpha</p></li>
-<li><p>8 bytes for mindt</p></li>
-<li><p>8 bytes for cfl_factor</p></li>
-<li><p>8 bytes for epsilonH</p></li>
-<li><p>8 bytes for t0</p></li>
-<li><p>8 bytes for X</p></li>
-<li><p>8 bytes for Y</p></li>
-<li><p>8 bytes for Z</p></li>
-<li><p>8 bytes for effective molar mass</p></li>
-<li><p>RS (Hex 1E)</p></li>
-<li><p>4 bytes as an int specifying the number of bytes for the tolerance dictionary stored as a pickle dump</p></li>
-<li><p>that number of bytes</p></li>
-<li><p>STX (Hex 2)</p></li>
-<li><p>12 bytes for shape of grid (RxTxP)</p></li>
-<li><p>RS (Hex 1E)</p></li>
-<li><p>Flattened temperature grid (8xRxTxP bytes)</p></li>
-<li><p>Flattened density grid</p></li>
-<li><p>Flattened energy grid</p></li>
-<li><p>Flattened pressure grid</p></li>
-<li><p>Flattened enclosed mass grid</p></li>
-<li><p>ETX (Hex 3)</p></li>
-<li><p>EOT (Hex 4)</p></li>
-</ul>
-<p>The file is written in binary format. The header is written first, followed by the body. The header contains the
-resolution of the grid, the radius of the star, the mass of the star, the timestep, the CFL factor, the epsilonH value,
-the initial time, the initial composition, the effective molar mass, and the tolerance dictionary. The body contains
-the temperature, density, energy, pressure, and enclosed mass grids.</p>
-<p>The file is read in the same order. The header is read first, followed by the body.</p>
-<section id="dependencies">
-<h3>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>numpy</p></li>
-</ul>
-</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="CoolDwarf.utils.output.binmod.binmod">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.output.binmod.</span></span><span class="sig-name descname"><span class="pre">binmod</span></span><a class="headerlink" href="#CoolDwarf.utils.output.binmod.binmod" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Binary file format for CoolDwarf output</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>SOH</strong><span class="classifier">bytes</span></dt><dd><p>Start of header byte</p>
-</dd>
-<dt><strong>RS</strong><span class="classifier">bytes</span></dt><dd><p>Record separator byte</p>
-</dd>
-<dt><strong>ENQ</strong><span class="classifier">bytes</span></dt><dd><p>Enquiry byte</p>
-</dd>
-<dt><strong>STX</strong><span class="classifier">bytes</span></dt><dd><p>Start of text byte</p>
-</dd>
-<dt><strong>ETX</strong><span class="classifier">bytes</span></dt><dd><p>End of text byte</p>
-</dd>
-<dt><strong>EOT</strong><span class="classifier">bytes</span></dt><dd><p>End of transmission byte</p>
-</dd>
-</dl>
-</dd>
-</dl>
 <p class="rubric">Methods</p>
 <table class="docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><strong>build_header(star, checksums=False)</strong></p></td>
-<td><p>Builds the header of the binary file</p></td>
+<tr class="row-odd"><td><p><strong>build_body</strong></p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><strong>build_body(star)</strong></p></td>
-<td><p>Builds the body of the binary file</p></td>
+<tr class="row-even"><td><p><strong>build_header</strong></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>save(filename, star, checksums=False)</strong></p></td>
-<td><p>Saves the star to a binary file</p></td>
+<tr class="row-odd"><td><p><strong>calculate_md5</strong></p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><strong>load(filename)</strong></p></td>
-<td><p>Loads a star from a binary file</p></td>
+<tr class="row-even"><td><p><strong>load</strong></p></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>calculate_md5(bts)</strong></p></td>
-<td><p>Calculates the md5 sum of a byte array</p></td>
+<tr class="row-odd"><td><p><strong>save</strong></p></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -168,129 +94,27 @@ the temperature, density, energy, pressure, and enclosed mass grids.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.utils.output.binmod.binmod.build_body">
 <span class="sig-name descname"><span class="pre">build_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">star</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.output.binmod.binmod.build_body" title="Link to this definition">¶</a></dt>
-<dd><p>Builds the body of the binary file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>star</strong><span class="classifier">VoxelSphere</span></dt><dd><p>The star to save</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>bytearray</dt><dd><p>The body of the binary file</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.utils.output.binmod.binmod.build_header">
 <span class="sig-name descname"><span class="pre">build_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">star</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checksums</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.output.binmod.binmod.build_header" title="Link to this definition">¶</a></dt>
-<dd><p>Builds the header of the binary file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>star</strong><span class="classifier">VoxelSphere</span></dt><dd><p>The star to save</p>
-</dd>
-<dt><strong>checksums</strong><span class="classifier">bool</span></dt><dd><p>Whether to include checksums in the header</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>bytearray</dt><dd><p>The header of the binary file</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.utils.output.binmod.binmod.calculate_md5">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_md5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.output.binmod.binmod.calculate_md5" title="Link to this definition">¶</a></dt>
-<dd><p>Calculates the md5 sum of a byte array</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>bts</strong><span class="classifier">bytes</span></dt><dd><p>The byte array to calculate the md5 sum of</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>bytes</dt><dd><p>The md5 sum of the byte array</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.utils.output.binmod.binmod.load">
 <span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.output.binmod.binmod.load" title="Link to this definition">¶</a></dt>
-<dd><p>Loads a star from a binary file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The name of the file to load</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>dict</dt><dd><p>A dictionary containing the star data
-The dictionary contains the following keys
-- radialResolution
-- azimuthalResolition
-- altitudinalResolition
-- radius
-- _mass
-- alpha
-- mindt
-- cfl_factor
-- epsilonH
-- _t
-- _X
-- _Y
-- _Z
-- _effectiveMolarMass
-- _tolerances
-- temperature
-- density
-- energy
-- pressure
-- mass</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt>ValueError</dt><dd><p>If the file format is invalid</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.utils.output.binmod.binmod.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">star</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="CoolDwarf.star.html#CoolDwarf.star.sphere.VoxelSphere" title="CoolDwarf.star.sphere.VoxelSphere"><span class="pre">VoxelSphere</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">checksums</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.output.binmod.binmod.save" title="Link to this definition">¶</a></dt>
-<dd><p>Saves the star to a binary file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>The name of the file to save</p>
-</dd>
-<dt><strong>star</strong><span class="classifier">VoxelSphere</span></dt><dd><p>The star to save</p>
-</dd>
-<dt><strong>checksums</strong><span class="classifier">bool, optional, default=False</span></dt><dd><p>Whether to include checksums in the header</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 

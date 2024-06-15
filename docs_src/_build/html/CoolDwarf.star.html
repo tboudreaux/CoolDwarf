@@ -184,6 +184,12 @@ volCheck is the maximum fractional error in volume allowed.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.evolve" title="CoolDwarf.star.sphere.VoxelSphere.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>([maxTime, dt, pbar])</p></td>
 <td><p>Evolves the star over a specified time period using a specified timestep.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.inject_energy" title="CoolDwarf.star.sphere.VoxelSphere.inject_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inject_energy</span></code></a>(i, j, k, dE)</p></td>
+<td><p>Injects energy into the star at a specified grid point.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.inject_energy_coord" title="CoolDwarf.star.sphere.VoxelSphere.inject_energy_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inject_energy_coord</span></code></a>(r, theta, phi, dE)</p></td>
+<td><p>Injects energy into the star at a specified coordinate. Parameters ---------- r : float     The radial coordinate of the grid point. theta : float     The azimuthal coordinate of the grid point. phi : float     The altitudinal coordinate of the grid point. dE : float     The amount of energy to inject into the star.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.save" title="CoolDwarf.star.sphere.VoxelSphere.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(filename)</p></td>
 <td><p>Save to a binary file format.</p></td>
 </tr>
@@ -431,6 +437,46 @@ the gravitational acceleration is set to infinity to deal with the singularity a
 <dd class="field-odd"><dl class="simple">
 <dt>xp.ndarray: The gravitational acceleration for the star.</dt><dd></dd>
 </dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.inject_energy">
+<span class="sig-name descname"><span class="pre">inject_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.inject_energy" title="Link to this definition">¶</a></dt>
+<dd><p>Injects energy into the star at a specified grid point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>i</strong><span class="classifier">int</span></dt><dd><p>The radial index of the grid point.</p>
+</dd>
+<dt><strong>j</strong><span class="classifier">int</span></dt><dd><p>The azimuthal index of the grid point.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>The altitudinal index of the grid point.</p>
+</dd>
+<dt><strong>dE</strong><span class="classifier">float</span></dt><dd><p>The amount of energy to inject into the star.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.inject_energy_coord">
+<span class="sig-name descname"><span class="pre">inject_energy_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.inject_energy_coord" title="Link to this definition">¶</a></dt>
+<dd><p>Injects energy into the star at a specified coordinate.
+Parameters
+———-
+r : float</p>
+<blockquote>
+<div><p>The radial coordinate of the grid point.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>theta<span class="classifier">float</span></dt><dd><p>The azimuthal coordinate of the grid point.</p>
+</dd>
+<dt>phi<span class="classifier">float</span></dt><dd><p>The altitudinal coordinate of the grid point.</p>
+</dd>
+<dt>dE<span class="classifier">float</span></dt><dd><p>The amount of energy to inject into the star.</p>
 </dd>
 </dl>
 </dd></dl>
