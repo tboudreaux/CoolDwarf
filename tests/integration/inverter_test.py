@@ -5,6 +5,8 @@ from CoolDwarf.star import VoxelSphere
 
 from time import perf_counter
 
+
+
 eos = get_eos("../science/TABLEEOS_2021_Trho_Y0292_v1", "CD21")
 iEOS = Inverter(eos)
 opac = KramerOpac(0.7, 0.02)

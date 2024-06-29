@@ -21,3 +21,9 @@ def plot_polar_slice(sphere, data, phi_slice=0, theta_offset=0):
     ax.set_theta_zero_location('N')
     ax.set_theta_direction(-1)
     return fig, ax
+
+
+def plot_vector_field(x, y, u, v):
+    fig, ax = plt.subplots(1, 1, figsize=(10, 7))
+    ax.quiver(x, y, u, v, color='b')
+    return fig, ax

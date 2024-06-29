@@ -10,10 +10,10 @@ from CoolDwarf.utils.plot import plot_polar_slice
 
 from time import perf_counter
 
-totalEnergy = list()
+perf = list()
 def monitor(sphere):
-    global totalEnergy
-    totalEnergy.append((sphere.energy.sum(), sphere.temperature[-1].mean(), sphere.age))
+    global perf
+    perf.append((sphere.evolutionary_steps, sphere.age, perf_counter() - start))
 
 
 def plot_every_time(sphere):
@@ -44,16 +44,20 @@ sphere = VoxelSphere(
     radialResolution=100,
     altitudinalResolition=20,
     azimuthalResolition=20,
-    cfl_factor = np.inf,
+    cfl_factor = 10,
 )
 
 # Model Relaxation
 start = perf_counter()
-try:
-    sphere.evolve(maxTime = np.pi*1e7 * 1e9, pbar=False, dt=np.pi*1e7, callback=monitor)
-except ValueError as e:
-    print(e)
-    print("Model relaxation failed")
-import pandas as pd
-df = pd.DataFrame(totalEnergy, columns=["Energy", "Teff", "Age"])
-df.to_csv("energy.csv", index=False)
+sphere.evolve(maxTime = 60*60, pbar=False, dt=30, callback=monitor)
+
+surfaceEnergy = sphere.energy[-1].mean()
+sphere.inject_surface_energy(10*surfaceEnergy, 0, 0, np.pi/10)
+
+sphere.evolve(maxTime = 86400 * 7, pbar=False, dt=60, callback=monitor, cbc=10)
+
+# perf = np.array(perf)
+# import pandas as pd
+# df = pd.DataFrame(perf, columns=["step", "age", "time"])
+# df.to_csv("perf-perturb.csv", index=False)
+

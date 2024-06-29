@@ -9,6 +9,9 @@ Constants include:
 - c: Speed of light in cgs units (2.99792458e10)
 - a: Radiation constant in cgs units (7.5646e-15)
 - G: Gravitational constant in cgs units (6.6743e-8)
+- sigma: Stefan-Boltzmann constant in cgs units (5.670374419e-5)
+- R: Ideal gas constant in cgs units (8.3145e7)
+- kB: Boltzmann constant in cgs units (1.3807e-16)
 
 Example usage
 -------------
@@ -20,5 +23,8 @@ CONST = {
     'mHe': 4.002602, #amu
     'c': 2.99792458e10, #cgs
     'a': 7.5646e-15, #cgs
-    'G': 6.6743e-8 #cgs
+    'G': 6.6743e-8, #cgs
+    "sigma": 5.670374419e-5, # cgs
+    "R": 8.3145e7, #cgs
+    "kB": 1.3807e-16 #cgs
 }

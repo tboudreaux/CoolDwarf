@@ -83,6 +83,7 @@ from CoolDwarf.err import EnergyConservationError, NonConvergenceError, VolumeEr
 from CoolDwarf.err import EOSInverterError
 from CoolDwarf.utils.output import binmod
 from CoolDwarf.utils.misc.backend import get_array_module, get_interpolator
+from CoolDwarf.utils.math import spherical_grid_equal_volume
 
 xp, CUPY = get_array_module()
 RegularGridInterpolator = get_interpolator()
@@ -175,7 +176,8 @@ class VoxelSphere:
             imodelOut=False,
             imodelOutCadence=1000,
             imodelOutCadenceUnit='s',
-            fmodelOut=True
+            fmodelOut=True,
+            outputDir = "."
             ):
         """
         Constructs a VoxelSphere object with the specified parameters.
@@ -233,6 +235,8 @@ class VoxelSphere:
             for seconds. Avalible units are 's' (seconds) and 'i' (iterations)
         fmodelOut : bool, optional
             A flag to output the final model. Default is True.
+        outputDir : str, optional
+            The output directory for the model files. Default is ".".
         """
         self._logger = logging.getLogger("CoolDwarf.star.sphere.VoxelSphere")
 
@@ -300,92 +304,8 @@ class VoxelSphere:
         self.fmodelOut = fmodelOut
 
         self._modelOutputController = binmod()
+        self._outputDir = outputDir
 
-    @property
-    def enclosed_mass(self):
-        """
-        Computes the enclosed mass of the star as a function of radius.
-
-        Returns
-        -------
-            interp1d: A 1D interpolation function for the enclosed mass.
-        """
-        enclosedMass = list()
-        radii = xp.linspace(0, xp.exp(self._1D_structure.lnR.values.max()))
-        integralMass = xp.trapz(self._densityf(radii), radii)
-        for r in radii:
-            rs = xp.linspace(0, r)
-            em = xp.trapz(self._densityf(rs) * (self._mass/integralMass), rs)
-            enclosedMass.append(em)
-        enclosedMass = xp.array(enclosedMass)
-        return RegularGridInterpolator((radii,), enclosedMass)
-        
-    @property
-    def radius(self):
-        """
-        Returns the radius of the star.
-
-        Returns
-        -------
-            float: The radius of the star.
-        """
-        return self._radius
-
-    def spherical_grid_equal_volume(self, numRadial, numTheta, numPhi, radius):
-        """
-        Generate points within a sphere with equal volume using a stratified sampling approach.
-        Returns radius, theta, phi as meshgrids and volume elements for each point.
-
-        Parameters
-        ----------
-        numRadial : int
-            Number of radial segments.
-        numTheta : int
-            Number of azimuthal segments.
-        numPhi : int
-            Number of altitudinal segments.
-        radius : float
-            Radius of the sphere.
-        
-        Returns
-        -------
-            tuple: A tuple of meshgrids for the radial, azimuthal, and altitudinal positions, and the volume elements.
-
-        Raises
-        ------
-        VolumeError
-            If the volume error is greater than the tolerance.
-
-        Example Usage
-        -------------
-        >>> r, theta, phi, volume = spherical_grid_equal_volume(10, 10, 10, 1)
-        """
-        rEdges = xp.linspace(0, radius, numRadial + 1)
-        r = (rEdges[:-1] + rEdges[1:]) / 2 
-        dr = xp.diff(rEdges) 
-
-        thetaEdges = xp.linspace(0, 2 * xp.pi, numTheta + 1)
-        theta = (thetaEdges[:-1] + thetaEdges[1:]) / 2 
-        dtheta = xp.diff(thetaEdges) 
-
-        phiEdges = xp.linspace(0, xp.pi, numPhi + 1)
-        phi = (phiEdges[:-1] + phiEdges[1:]) / 2 
-        dphi = xp.diff(phiEdges)  
-
-        R, THETA, PHI = xp.meshgrid(r, theta, phi, indexing='ij')
-        dR, dTHETA, dPHI = xp.meshgrid(dr, dtheta, dphi, indexing='ij')
-
-        volumeElements = (R ** 2) * xp.sin(PHI) * dR * dTHETA * dPHI
-
-        discreteVolume = xp.sum(volumeElements)
-        trueVolume = 4/3 * xp.pi * radius**3
-        
-        # Check if the fractional error in the volume difference is within tol['volCheck']
-        if abs(discreteVolume - trueVolume) / trueVolume > self._tolerances['volCheck']:
-            raise VolumeError(f"Volume error is greater than tolerance: {abs(discreteVolume - trueVolume) / trueVolume}")
-        self._logger.info(f"Volume error: {abs(discreteVolume - trueVolume) / trueVolume} is within tolerance ({self._tolerances['volCheck']})")
-
-        return R, THETA, PHI, r, theta, phi, volumeElements
 
     def _create_voxel_sphere(self):
         """
@@ -395,7 +315,14 @@ class VoxelSphere:
         The mass grid is computed based on the enclosed mass.
         The pressure and energy grids are computed using the EOS.
         """
-        self.R, self.THETA, self.PHI, self.r, self.theta, self.phi, self._volumneGrid = self.spherical_grid_equal_volume(self.radialResolution, self.azimuthalResolition, self.altitudinalResolition, self.radius)
+        (self.R, self.THETA, self.PHI, self.r, self.theta, self.phi,
+        self._volumneGrid, self._volumeError) = spherical_grid_equal_volume(
+                self.radialResolution,
+                self.azimuthalResolition,
+                self.altitudinalResolition,
+                self.radius,
+                self._tolerances['volCheck']
+                )
 
         if self.r.size <= 2:
             raise ResolutionError("Minimum of 3 radial points (radialResolution) required")
@@ -795,6 +722,7 @@ class VoxelSphere:
         while not converged:
             try:
                 self._update_energy(dt)
+                self._cool_star(dt)
                 self._reverse_EOS()
                 energyChange = xp.abs(xp.sum(initEnergyGrid - self._energyGrid))/xp.sum(initEnergyGrid)
                 if energyChange > self._tolerances['maxEChange']:
@@ -858,14 +786,85 @@ class VoxelSphere:
                     self._logger.error(f"EOS Inverter Error ({e}), stopping evolution")
                     self._logger.error(f"Final energy bounds are {xp.min(self._energyGrid):0.4E} to {xp.max(self._energyGrid):0.4E}")
                     if self.fmodelOut:
-                        self.save(f"star_{self._t}.bin")
+                        outPath = os.path.join(self._outputDir, f"star_{self._t}.bin")
+                        self.save(outPath)
                     break
+                if self.imodelOut and self._evolutionarySteps % self.imodelOutCadence == 0:
+                    outPath = os.path.join(self._outputDir, f"star_{self._t}.bin")
+                    self.save(outPath)
                 if self._evolutionarySteps % cbc == 0:
                     callback(self, *cargs)
 
                 pbar.update(useddt)
         if self.fmodelOut:
-            self.save(f"star_{self._t}.bin")
+            outPath = os.path.join(self._outputDir, f"star_{self._t}.bin")
+            self.save(outPath)
+
+    def _cool_star(self, dt):
+        """
+        Calculates radiative energy loss and removes that energy from the star allowing 
+        for radiative cooling.
+
+        Parameters
+        ----------
+        dt : float
+            The timestep to use for the cooling.
+        """
+        surfaceLuminosity = 4 * xp.pi * self._radius**2 * self.CONST['sigma'] * self._temperatureGrid[-1, :, :]
+        surfaceEnergyLoss = surfaceLuminosity * dt
+        self._energyGrid[-1, :, :] -= surfaceEnergyLoss
+
+    @property
+    def evolutionary_steps(self):
+        """
+        Returns the number of evolutionary steps taken by the star.
+        Returns
+        -------
+            int: The number of evolutionary steps taken by the star.
+        """
+        x = self._evolutionarySteps
+        return x
+
+    @property
+    def age(self):
+        """
+        Returns the age of the star.
+        Returns
+        -------
+            float: The age of the star.
+        """
+        x = self._t
+        return x
+
+    @property
+    def enclosed_mass(self):
+        """
+        Computes the enclosed mass of the star as a function of radius.
+
+        Returns
+        -------
+            interp1d: A 1D interpolation function for the enclosed mass.
+        """
+        enclosedMass = list()
+        radii = xp.linspace(0, xp.exp(self._1D_structure.lnR.values.max()))
+        integralMass = xp.trapz(self._densityf(radii), radii)
+        for r in radii:
+            rs = xp.linspace(0, r)
+            em = xp.trapz(self._densityf(rs) * (self._mass/integralMass), rs)
+            enclosedMass.append(em)
+        enclosedMass = xp.array(enclosedMass)
+        return RegularGridInterpolator((radii,), enclosedMass)
+        
+    @property
+    def radius(self):
+        """
+        Returns the radius of the star.
+
+        Returns
+        -------
+            float: The radius of the star.
+        """
+        return self._radius
 
     @property
     def temperature(self) -> xp.ndarray:
@@ -928,39 +927,29 @@ class VoxelSphere:
         surfaceTemperature = self._temperatureGrid[-1, :, :]
         return surfaceTemperature
 
-    def inject_energy(self, i, j, k, dE):
+    def inject_surface_energy(self, energy, theta0, phi0, omega):
         """
-        Injects energy into the star at a specified grid point.
+        Injects energy into the star at a specified coordinate subtending
+        some solid angle.
 
         Parameters
         ----------
-        i : int
-            The radial index of the grid point.
-        j : int
-            The azimuthal index of the grid point.
-        k : int
-            The altitudinal index of the grid point.
-        dE : float
-            The amount of energy to inject into the star.
+        energy : float
+            The energy to inject into the star. This must be given in no log cgs units.
+        theta0 : float
+            The azimuthal coordinate of the injection point.
+        phi0 : float
+            The altitudinal coordinate of the injection point.
+        omega : float
+            The solid angle subtended by the injection point.
         """
-        self._energyGrid[i, j, k] += dE
-
-    def inject_energy_coord(self, r, theta, phi, dE):
-        """
-        Injects energy into the star at a specified coordinate.
-        Parameters
-        ----------
-        r : float
-            The radial coordinate of the grid point.
-        theta : float
-            The azimuthal coordinate of the grid point.
-        phi : float
-            The altitudinal coordinate of the grid point.
-        dE : float
-            The amount of energy to inject into the star.
-        """
-        i, j, k = self._get_grid_index(r, theta, phi)
-        self.inject_energy(i, j, k, dE)
+        dTheta = xp.arccos(1 - (omega / (2 * xp.pi)))
+        dPhi = dTheta * xp.sin(theta0)
+        lbi, lbj, lbk = self._get_grid_index(self.r[-1], theta0 - dTheta, phi0 - dPhi)
+        rbi, rbj, rbk = self._get_grid_index(self.r[-1], theta0 + dTheta, phi0 - dPhi)
+        lui, luj, luk = self._get_grid_index(self.r[-1], theta0 - dTheta, phi0 + dPhi)
+        i, j, k = lbi, slice(lbj, rbj), slice(lbk, luk)
+        self._energyGrid[i, j, k] += energy
 
     def _get_grid_index(self, r, theta, phi):
         """
@@ -1032,3 +1021,6 @@ class VoxelSphere:
             self._logger.error(f"Error saving model: {filename} not found")
             return False
         return True
+
+    def __repr__(self):
+        return f"VoxelSphere(mass={self._mass}, model={self._model_path}, X={self._X}, Y={self._Y}, Z={self._Z}, alpha={self.alpha})"
