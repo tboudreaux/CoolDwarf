@@ -53,8 +53,8 @@ class AdiabaticIdealAtmosphere:
                 )
 
         self._temperatureGrid = self.temperature_profile(self.R)
-        self._pressureGrid = self.pressure_profile(self.R)
         self._densityGrid = self.density_profile(self.R)
+        self._pressureGrid = self.pressure_profile(self.R)
         self._energyGrid = (self.dof/2) * ((CONST['kB'] * self._temperatureGrid)/self._mu) * self._densityGrid * self._volumeGrid
 
 
@@ -70,11 +70,65 @@ class AdiabaticIdealAtmosphere:
 
     def pressure_profile(self, r : Union[float, NDArray[np.float64]]) -> Union[float, NDArray[np.float64]]:
         z = r - self.Rs
-        P = self.Po * (1 - z/self.H)**(self.Cp/CONST['R'])
-        return P
+        radialPressure = self.Po * (1 - z/self.H)**(self.Cp/CONST['R'])
+        geostrophicPressure = ((self._densityGrid * self.Omega**2 * self.R)/4) * (1 + xp.cos(2*self.PHI))
+        return radialPressure + geostrophicPressure
 
     def adiabatic_loss(self) -> float:
         return -self.g/self.Cp
+
+    def advective_loss(self):
+        # using correction false as I broke out the jacobian into the advection term
+        v = self.geostrophic_wind_velocity_field
+        grT = self.gradT(corr=False)
+        advection = (v[1]/(self.R*xp.cos(self.PHI))) * grT[1] + (v[2]/self.R) * grT[2]
+        return advection
+
+    def diffusive_loss(self):
+        # using correction false as I broke out the jacobian into the diffusion term
+        grT = self.gradT(corr=False)
+        lapT = self.gradT(order=2, corr=False)
+        alpha = (self.k/(self._densityGrid * self.Cp))
+        adjustPhi = xp.cos(self.PHI) * grT[2]
+        lapAdjust = xp.gradient(adjustPhi, self.phi, axis=2)
+        diffusion = (alpha/self.R**2) * ((1/xp.cos(self.PHI)**2)*lapT[1] + lapAdjust/xp.cos(self.PHI))
+        return diffusion
+
+    def radiative_loss(self):
+        # TODO Impliment this properly. I.e. find the radiative loss
+        return 0
+
+    def timestep_temperature(self, dt : float):
+        """
+        Calculate the change in temperature over some timestep, dt.
+        The change in temperature is given by the following equation:
+            .. math::
+                \\Delta T = \\lambda_{D} - \\lambda_{A} + \\lambda_{R}
+
+        Where :math:`\\lambda_{D}` is the diffusive loss, :math:`\\lambda_{A}` is the advective loss,
+        and :math:`\\lambda_{R}` is the radiative loss. 
+
+        Parameters
+        ----------
+        dt : float
+            The timestep to calculate the change in temperature over.
+
+        Returns
+        -------
+        deltaT : float
+            The change in temperature over the timestep, dt.
+        """
+        # TODO Also add heating from the surface of the star. This is important probably to keep the atmosphere
+        # hot and not cooling down too much
+        lambdaD = self.diffusive_loss()
+        lambdaA = self.advective_loss()
+        lambdaR = self.radiative_loss()
+        return (lambdaD - lambdaA + lambdaR) * dt
+
+    @property
+    def k(self):
+        # TODO Impliment this properly. I.e. find the thermal conducitivity
+        return 1
 
     @property
     def geostrophic_wind_velocity_field(self) -> Tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
@@ -96,29 +150,90 @@ class AdiabaticIdealAtmosphere:
     def density(self) -> NDArray[np.float64]:
         return self._densityGrid.copy()
 
-    @property
-    def gradT(self) -> Tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
+    def gradT(self, order : int = 1, zThresh : float = 1e-8, corr : bool = True) -> Tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
         """
         Computes the temperature gradients in the radial, azimuthal, and altitudinal directions.
+
+        Parameters
+        ----------
+        order : int, default=1
+            The order of the derivative.
+        zThresh : float, default=1e-8
+            The threshold value for the temperature gradient. If the absolute
+            value of the gradient is less than zThresh, it is set to 0.
+        coor : bool, default=True
+            If True, the temperature gradient is computed in spherical coordinates.
+            If False, the gradient is computed in cartesian coordinates. More formally,
+            if true then the gradient is computed as:
+
+            .. math::
+                \\nabla T = (\\partial_r T, \\frac{1}{r} \\partial_{\\theta} T, \\frac{1}{r \\sin(\\phi)} \\partial_{\\phi} T)
+
+            If false, the gradient is computed as:
+
+            .. math::
+                \\nabla T = (\\partial_x T, \\partial_y T, \\partial_z T)
+
+            A similar pattern is carried over to the laplacian.
+
 
         Returns
         -------
             tuple: A tuple of 3D arrays representing the temperature gradients in the radial, azimuthal, and altitudinal directions.
             The arrays are in the form of (tGradR, tGradTheta, tGradPhi).
+
+        Raises
+        ------
+        TypeError
+            If order is not an integer
+        ValueError
+            If order is less than 1.
         """
+        if not isinstance(order, int):
+            raise TypeError(f"Order must be of type integer, not {type(order)}")
+        if order != 1 and order != 2:
+            raise ValueError(f"Order must be 1 or 2, not {order}")
+
         tGradR, tGradTheta, tGradPhi = xp.gradient(self._temperatureGrid, self.r, self.theta, self.phi)
-        tGradR[abs(tGradR) < 1e-8] = 0
-        tGradTheta[abs(tGradTheta) < 1e-8] = 0
-        tGradPhi[abs(tGradPhi) < 1e-8] = 0
+        if corr:
+            tGradTheta = tGradTheta/(self.R * xp.sin(self.PHI))
+            tGradPhi = tGradPhi/(self.R)
+
+        # Find higher order temperature derivitives by recursivley calling gradient
+        if order == 2:
+            if corr:
+                tGradRAdjust = self.R**2 * tGradR
+                tGradPhiAdjust = xp.sin(self.PHI) * tGradPhi
+            else:
+                tGradRAdjust = tGradR
+                tGradPhiAdjust = tGradPhi
+
+            tGradR = xp.gradient(tGradRAdjust, self.r, axis=0)
+            tGradTheta = xp.gradient(tGradTheta, self.theta, axis=1)
+            tGradPhi = xp.gradient(tGradPhiAdjust, self.phi, axis=2)
+
+            if corr:
+                tGradR = tGradR/(self.R**2)
+                tGradTheta = tGradTheta/(self.R**2 * (xp.sin(self.PHI))**2)
+                tGradPhi = tGradPhi/(self.R**2 * xp.sin(self.PHI))
+
+        tGradR[abs(tGradR) < zThresh] = 0
+        tGradTheta[abs(tGradTheta) < zThresh] = 0
+        tGradPhi[abs(tGradPhi) < zThresh] = 0
+
         return (tGradR, tGradTheta, tGradPhi)
 
     @property
-    def gradP(self) -> Tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
+    def gradP(self, zThresh : float = 1e-8) -> Tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
         pGradR, pGradTheta, pGradPhi = xp.gradient(self._pressureGrid, self.r, self.theta, self.phi)
-        pGradR[abs(pGradR) < 1e-8] = 0
-        pGradTheta[abs(pGradTheta) < 1e-8] = 0
-        pGradPhi[abs(pGradPhi) < 1e-8] = 0
-        pGradPhi = self._densityGrid * self.Omega ** 2 * self.R * xp.sin(self.PHI) * xp.cos(self.PHI)
+
+        pGradTheta = pGradTheta/(self.R * xp.sin(self.PHI))
+        pGradPhi = pGradPhi/(self.R)
+
+        pGradR[abs(pGradR) < zThresh] = 0
+        pGradTheta[abs(pGradTheta) < zThresh] = 0
+        pGradPhi[abs(pGradPhi) < zThresh] = 0
+
         return (pGradR, pGradTheta, pGradPhi)
 
     @property
