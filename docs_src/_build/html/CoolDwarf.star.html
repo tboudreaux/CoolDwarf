@@ -114,7 +114,7 @@ as well as classes for handling errors related to energy conservation and non-co
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.star.sphere.</span></span><span class="sig-name descname"><span class="pre">VoxelSphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EOS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressureRegularization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialResolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuthalResolition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitudinalResolition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'maxEChange':</span> <span class="pre">0.0001,</span> <span class="pre">'relax':</span> <span class="pre">1e-06,</span> <span class="pre">'volCheck':</span> <span class="pre">0.01}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelFormat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mesa'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.901</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mindt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfl_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imodelOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imodelOutCadence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imodelOutCadenceUnit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmodelOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.star.sphere.</span></span><span class="sig-name descname"><span class="pre">VoxelSphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EOS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pressureRegularization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialResolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuthalResolition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitudinalResolition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'maxEChange':</span> <span class="pre">0.0001,</span> <span class="pre">'relax':</span> <span class="pre">1e-06,</span> <span class="pre">'volCheck':</span> <span class="pre">0.01}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelFormat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mesa'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.901</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mindt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfl_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imodelOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imodelOutCadence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imodelOutCadenceUnit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmodelOut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputDir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class to represent a 3D voxelized sphere model for a star.</p>
 <dl class="field-list simple">
@@ -184,17 +184,11 @@ volCheck is the maximum fractional error in volume allowed.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.evolve" title="CoolDwarf.star.sphere.VoxelSphere.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>([maxTime, dt, pbar, callback, cbc, cargs])</p></td>
 <td><p>Evolves the star over a specified time period using a specified timestep.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.inject_energy" title="CoolDwarf.star.sphere.VoxelSphere.inject_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inject_energy</span></code></a>(i, j, k, dE)</p></td>
-<td><p>Injects energy into the star at a specified grid point.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.inject_surface_energy" title="CoolDwarf.star.sphere.VoxelSphere.inject_surface_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inject_surface_energy</span></code></a>(energy, theta0, phi0, ...)</p></td>
+<td><p>Injects energy into the star at a specified coordinate subtending some solid angle.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.inject_energy_coord" title="CoolDwarf.star.sphere.VoxelSphere.inject_energy_coord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inject_energy_coord</span></code></a>(r, theta, phi, dE)</p></td>
-<td><p>Injects energy into the star at a specified coordinate. Parameters ---------- r : float     The radial coordinate of the grid point. theta : float     The azimuthal coordinate of the grid point. phi : float     The altitudinal coordinate of the grid point. dE : float     The amount of energy to inject into the star.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.save" title="CoolDwarf.star.sphere.VoxelSphere.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(filename)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.save" title="CoolDwarf.star.sphere.VoxelSphere.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(filename)</p></td>
 <td><p>Save to a binary file format.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.spherical_grid_equal_volume" title="CoolDwarf.star.sphere.VoxelSphere.spherical_grid_equal_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spherical_grid_equal_volume</span></code></a>(numRadial, ...)</p></td>
-<td><p>Generate points within a sphere with equal volume using a stratified sampling approach.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#CoolDwarf.star.sphere.VoxelSphere.timestep" title="CoolDwarf.star.sphere.VoxelSphere.timestep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">timestep</span></code></a>([userdt])</p></td>
 <td><p>Computes a timestep for the star based on the CFL condition or the user-specified timestep.</p></td>
@@ -203,7 +197,7 @@ volCheck is the maximum fractional error in volume allowed.</p>
 </table>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.CONST">
-<span class="sig-name descname"><span class="pre">CONST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'G':</span> <span class="pre">6.6743e-08,</span> <span class="pre">'a':</span> <span class="pre">7.5646e-15,</span> <span class="pre">'c':</span> <span class="pre">29979245800.0,</span> <span class="pre">'mH':</span> <span class="pre">1.00784,</span> <span class="pre">'mHe':</span> <span class="pre">4.002602}</span></em><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.CONST" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">CONST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'G':</span> <span class="pre">6.6743e-08,</span> <span class="pre">'R':</span> <span class="pre">83145000.0,</span> <span class="pre">'a':</span> <span class="pre">7.5646e-15,</span> <span class="pre">'c':</span> <span class="pre">29979245800.0,</span> <span class="pre">'kB':</span> <span class="pre">1.3807e-16,</span> <span class="pre">'mH':</span> <span class="pre">1.00784,</span> <span class="pre">'mHe':</span> <span class="pre">4.002602,</span> <span class="pre">'sigma':</span> <span class="pre">5.670374419e-05}</span></em><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.CONST" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -223,6 +217,17 @@ volCheck is the maximum fractional error in volume allowed.</p>
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.age">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">age</span></span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.age" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the age of the star.
+Returns
+——-</p>
+<blockquote>
+<div><p>float: The age of the star.</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
@@ -367,6 +372,17 @@ Returns
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.evolutionary_steps">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evolutionary_steps</span></span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.evolutionary_steps" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the number of evolutionary steps taken by the star.
+Returns
+——-</p>
+<blockquote>
+<div><p>int: The number of evolutionary steps taken by the star.</p>
+</div></blockquote>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.evolve">
 <span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxTime:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">31540000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">86400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbar=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback=&lt;function</span> <span class="pre">VoxelSphere.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbc=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cargs:</span> <span class="pre">tuple</span> <span class="pre">=</span> <span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.evolve" title="Link to this definition">¶</a></dt>
@@ -451,41 +467,22 @@ the gravitational acceleration is set to infinity to deal with the singularity a
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.inject_energy">
-<span class="sig-name descname"><span class="pre">inject_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.inject_energy" title="Link to this definition">¶</a></dt>
-<dd><p>Injects energy into the star at a specified grid point.</p>
+<dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.inject_surface_energy">
+<span class="sig-name descname"><span class="pre">inject_surface_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.inject_surface_energy" title="Link to this definition">¶</a></dt>
+<dd><p>Injects energy into the star at a specified coordinate subtending
+some solid angle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>i</strong><span class="classifier">int</span></dt><dd><p>The radial index of the grid point.</p>
+<dt><strong>energy</strong><span class="classifier">float</span></dt><dd><p>The energy to inject into the star. This must be given in no log cgs units.</p>
 </dd>
-<dt><strong>j</strong><span class="classifier">int</span></dt><dd><p>The azimuthal index of the grid point.</p>
+<dt><strong>theta0</strong><span class="classifier">float</span></dt><dd><p>The azimuthal coordinate of the injection point.</p>
 </dd>
-<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>The altitudinal index of the grid point.</p>
+<dt><strong>phi0</strong><span class="classifier">float</span></dt><dd><p>The altitudinal coordinate of the injection point.</p>
 </dd>
-<dt><strong>dE</strong><span class="classifier">float</span></dt><dd><p>The amount of energy to inject into the star.</p>
-</dd>
-</dl>
+<dt><strong>omega</strong><span class="classifier">float</span></dt><dd><p>The solid angle subtended by the injection point.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.inject_energy_coord">
-<span class="sig-name descname"><span class="pre">inject_energy_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.inject_energy_coord" title="Link to this definition">¶</a></dt>
-<dd><p>Injects energy into the star at a specified coordinate.
-Parameters
-———-
-r : float</p>
-<blockquote>
-<div><p>The radial coordinate of the grid point.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>theta<span class="classifier">float</span></dt><dd><p>The azimuthal coordinate of the grid point.</p>
-</dd>
-<dt>phi<span class="classifier">float</span></dt><dd><p>The altitudinal coordinate of the grid point.</p>
-</dd>
-<dt>dE<span class="classifier">float</span></dt><dd><p>The amount of energy to inject into the star.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -579,38 +576,6 @@ Returns
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>bool: A flag indicating if the save was successful.</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="CoolDwarf.star.sphere.VoxelSphere.spherical_grid_equal_volume">
-<span class="sig-name descname"><span class="pre">spherical_grid_equal_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numRadial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numTheta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numPhi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.sphere.VoxelSphere.spherical_grid_equal_volume" title="Link to this definition">¶</a></dt>
-<dd><p>Generate points within a sphere with equal volume using a stratified sampling approach.
-Returns radius, theta, phi as meshgrids and volume elements for each point.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>numRadial</strong><span class="classifier">int</span></dt><dd><p>Number of radial segments.</p>
-</dd>
-<dt><strong>numTheta</strong><span class="classifier">int</span></dt><dd><p>Number of azimuthal segments.</p>
-</dd>
-<dt><strong>numPhi</strong><span class="classifier">int</span></dt><dd><p>Number of altitudinal segments.</p>
-</dd>
-<dt><strong>radius</strong><span class="classifier">float</span></dt><dd><p>Radius of the sphere.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt>tuple: A tuple of meshgrids for the radial, azimuthal, and altitudinal positions, and the volume elements.</dt><dd></dd>
-</dl>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt>VolumeError</dt><dd><p>If the volume error is greater than the tolerance.</p>
-</dd>
 </dl>
 </dd>
 </dl>
@@ -723,7 +688,11 @@ based on the the acutal timestep used. The timestep is then returned.</p>
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="CoolDwarf.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.html#module-CoolDwarf">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CoolDwarf.star</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-CoolDwarf.star.sphere">CoolDwarf.star.sphere module</a></li>

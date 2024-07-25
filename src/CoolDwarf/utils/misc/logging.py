@@ -11,6 +11,8 @@ Example usage
 import logging
 import logging.config
 
+import os
+
 # Define a log level for evolutionary steps
 EVOLVE_LEVEL = 43
 logging.addLevelName(EVOLVE_LEVEL, "EVOLVE")
@@ -31,7 +33,11 @@ class ExcludeCustomFilter(logging.Filter):
     def filter(self, record):
         return record.levelno != EVOLVE_LEVEL
 
-def setup_logging(debug: bool = False):
+def setup_logging(
+        debug: bool = False,
+        logName : str = "CoolDwarf.log",
+        evolName: str = "CoolDwarf.evolve",
+        clearFiles : bool = True):
     """
     This function is used to set up the logging configuration for CoolDwarf.
 
@@ -39,11 +45,23 @@ def setup_logging(debug: bool = False):
     ----------
     debug : bool, default=False
         If True, sets the logging level to DEBUG. Otherwise, sets the logging level to INFO.
+    logName : str, default="CoolDwarf.log"
+        The name of the log file.
+    evolName : str, default="CoolDwarf.evolve"
+        The name of the evolve log file.
+    clearFiles : bool, default=True
+        If True, clears the log files before writing to them. Otherwise, appends to the log files.
     """
     if debug:
         ll = "DEBUG"
     else:
         ll = "INFO"
+
+    if clearFiles:
+        if os.path.exists(logName):
+            os.remove(logName)
+        if os.path.exists(evolName):
+            os.remove(evolName)
 
     logging_config = {
         'version': 1,
@@ -67,14 +85,14 @@ def setup_logging(debug: bool = False):
                 'class': 'logging.FileHandler',
                 'level': f'{ll}',
                 'formatter': 'standard',
-                'filename': 'CoolDwarf.log',
+                'filename': f'{logName}',
                 'filters': ['exclude_custom'],
             },
             'file_custom': {
                 'class': 'logging.FileHandler',
                 'level': 'EVOLVE',
                 'formatter': 'standard',
-                'filename': 'CoolDwarf.evolve',
+                'filename': f'{evolName}',
                 'filters': ['custom_only'],
             },
         },
