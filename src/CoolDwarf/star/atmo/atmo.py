@@ -1,12 +1,20 @@
+from CoolDwarf import rad
 from CoolDwarf.utils.misc.backend import get_array_module
 from CoolDwarf.utils.math import spherical_grid_equal_volume
 from CoolDwarf.star import VoxelSphere
 from CoolDwarf.utils.const import CONST
 from CoolDwarf.star import default_tol
+from CoolDwarf.opac import KramerOpac
+from CoolDwarf.rad.LTE import attenuate_flux, optical_depth
+
+from CoolDwarf.err import EnergyConservationError, NonConvergenceError, VolumeError, ResolutionError
+from CoolDwarf.typing import Arithmetic
 
 from numpy.typing import NDArray
 import numpy as np
 from typing import Tuple, Union, Dict
+
+import logging
 
 xp, CUPY = get_array_module()
 
@@ -14,13 +22,15 @@ class AdiabaticIdealAtmosphere:
     def __init__(
             self,
             structure : VoxelSphere,
+            opac,
             radialResolution : int = 10,
             azimuthalResolution : int = 10,
             altitudinalResolution : int = 10,
             tol : Dict[str, float]  = default_tol(),
             dof : int = 5,
-            Omega : float = 0
+            Omega : float = 0,
             ):
+        self._logger = logging.getLogger("CoolDwarf.star.atmo.AdiabaticIdealAtmosphere")
         self.si, self.sj, self.sk = structure._get_grid_index(structure.radius, 0, 0)
         self.Rs = structure.R[self.si, self.sj, self.sk]
         self.structure = structure
@@ -30,6 +40,7 @@ class AdiabaticIdealAtmosphere:
         self.Omega = Omega
         self._tolerances = tol
         self.dof = dof
+        self._opacity = opac
 
         self.rho0 : float = structure.density[self.si, self.sj, self.sk]
         self.To : float = structure.temperature[self.si, self.sj, self.sk]
@@ -51,11 +62,78 @@ class AdiabaticIdealAtmosphere:
                 self._tolerances['volCheck'],
                 minR = self.Rs
                 )
+        self._X = self.R * xp.sin(self.THETA) * xp.cos(self.PHI)
+        self._Y = self.R * xp.sin(self.THETA) * xp.sin(self.PHI)
+        self._Z = self.R * xp.cos(self.THETA)
 
         self._temperatureGrid = self.temperature_profile(self.R)
         self._densityGrid = self.density_profile(self.R)
         self._pressureGrid = self.pressure_profile(self.R)
         self._energyGrid = (self.dof/2) * ((CONST['kB'] * self._temperatureGrid)/self._mu) * self._densityGrid * self._volumeGrid
+        self._logger.info(f"AdiabaticIdealAtmosphere initialized with structure {self.structure}, radial resolution {self.radialResolution}, azimuthal resolution {self.azimuthalResolution}, altitudinal resolution {self.altitudinalResolution}, tolerances {self._tolerances}, and {Omega}")
+        self._evolutionarySteps = 0
+
+    def inject_energy(self, theta, phi, r, energy):
+        area = xp.pi * r**2
+        flux = energy/area
+        gamma = np.arccos(1 - ((2 * r**2)/self.atmoHeight**2))
+        da = gamma/2
+        _, itu, _ = self._get_grid_index(self.atmoHeight, theta + da, phi)
+        _, itd, _ = self._get_grid_index(self.atmoHeight, theta - da, phi)
+        _, _, jpu = self._get_grid_index(self.atmoHeight, theta, phi + da)
+        _, _, jpd = self._get_grid_index(self.atmoHeight, theta, phi - da)
+
+
+        if itu == itd:
+            ibounds = (itu, itu+1)
+        else:
+            ibounds = sorted((itu, itd))
+        if jpu == jpd:
+            jbounds = (jpu, jpu+1)
+        else:
+            jbounds = sorted((jpu, jpd))
+
+
+
+
+        temperatureColumn  = self._temperatureGrid[:, ibounds[0]:ibounds[1], jbounds[0]:jbounds[1]]
+        densityColumn = self._densityGrid[:, ibounds[0]:ibounds[1], jbounds[0]:jbounds[1]]
+        print(temperatureColumn.min(), temperatureColumn.max())
+        print(densityColumn.min(), densityColumn.max())
+        opacityColumn = self._opacity.kappa(temperatureColumn, densityColumn)
+        print(opacityColumn)
+        ds = np.gradient(self.R[:, itu, jpu]).reshape(temperatureColumn.shape[0], 1, 1)
+        dsReShape = np.ones_like(opacityColumn)
+        dsReShape *= ds
+        tau = np.zeros_like(opacityColumn)
+        for radiusID, deltaRadius in enumerate(ds):
+            tau[radiusID] = optical_depth(opacityColumn[:radiusID], densityColumn[:radiusID], dsReShape[:radiusID])
+        
+        print(tau)
+        attenuatedFlux = attenuate_flux(flux, tau)
+        print(attenuatedFlux)
+
+
+
+    def _get_grid_index(self, r, theta, phi):
+        """
+        Computes the grid index for a specified coordinate.
+        Parameters
+        ----------
+        r : float
+            The radial coordinate of the grid point.
+        theta : float
+            The azimuthal coordinate of the grid point.
+        phi : float
+            The altitudinal coordinate of the grid point.
+        Returns
+        -------
+            tuple: A tuple of the grid indices for the specified coordinate.
+        """
+        i = xp.abs(self.r - r).argmin()
+        j = xp.abs(self.theta - theta).argmin()
+        k = xp.abs(self.phi - phi).argmin()
+        return i, j, k
 
 
     def density_profile(self, r : Union[float, NDArray[np.float64]]) -> Union[float, NDArray[np.float64]]:   
@@ -96,6 +174,7 @@ class AdiabaticIdealAtmosphere:
 
     def radiative_loss(self):
         # TODO Impliment this properly. I.e. find the radiative loss
+        self._logger.debug("Radiative loss not implimented yet but called. Returning 0 (No Cooling or heating)")
         return 0
 
     def timestep_temperature(self, dt : float):
@@ -123,7 +202,28 @@ class AdiabaticIdealAtmosphere:
         lambdaD = self.diffusive_loss()
         lambdaA = self.advective_loss()
         lambdaR = self.radiative_loss()
+        self._logger.debug(f"Timestep atmospheric temperature called with lambdaD: {lambdaD.mean()}, lambdaA: {lambdaA.mean()}, lambdaR: {lambdaR}")
         return (lambdaD - lambdaA + lambdaR) * dt
+
+    def timestep(self, dt : float):
+        dT = self.timestep_temperature(dt)
+        dU = self.Cv * dT
+        fractionalEnergyChange = dU/self._energyGrid
+        if np.any(fractionalEnergyChange > self._tolerances["maxEChange"]):
+            raise EnergyConservationError(f"Energy change is greater than the maximum energy change tolerance. Energy change: {fractionalEnergyChange.mean()}, Tolerance: {self._tolerances['maxEChange']}")
+        pTempSTD = xp.std(self._temperatureGrid)
+        self._temperatureGrid += dT
+        self._logger.debug(f"Atmospheric Temperature standard deviation before timestep (before, after): {xp.std(self._temperatureGrid)}, {pTempSTD}")
+        initialTotalEnergy = xp.sum(self._energyGrid)
+        self._energyGrid += dU
+        finalTotalEnergy = xp.sum(self._energyGrid)
+        fractionalEnergyChange = (finalTotalEnergy - initialTotalEnergy)/initialTotalEnergy
+        self._logger.debug(f"Initial total energy: {initialTotalEnergy}, Final total energy: {finalTotalEnergy}. Fractional Change: {fractionalEnergyChange}")
+        if abs(fractionalEnergyChange) > self._tolerances["maxEChange"]:
+            self._logger.error(f"Energy change is greater than the maximum energy change tolerance. Energy change: {fractionalEnergyChange}, Tolerance: {self._tolerances['maxEChange']}")
+            raise EnergyConservationError(f"Energy change is greater than the maximum energy change tolerance. Energy change: {fractionalEnergyChange}, Tolerance: {self._tolerances['maxEChange']}")
+        self._evolutionarySteps += 1
+        return dt
 
     @property
     def k(self):
@@ -222,6 +322,27 @@ class AdiabaticIdealAtmosphere:
         tGradPhi[abs(tGradPhi) < zThresh] = 0
 
         return (tGradR, tGradTheta, tGradPhi)
+
+    @property
+    def lapT(self, corr: bool = True) -> Tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
+        """
+        Find the laplacian of the temperature field. This is
+        simply a wrapper around 2nd order gradient
+
+        Parameters
+        ----------
+        corr : bool, default=True
+            If True, the laplacian is computed in spherical coordinates.
+            If False, the laplacian is computed in cartesian coordinates.
+
+        Returns
+        -------
+        lapT : NDArray[np.float64]
+            The laplacian of the temperature field.
+        """
+
+        lapR, lapTheta, lapPhi = self.gradT(order=2, corr=corr)
+        return (lapR, lapTheta, lapPhi)
 
     @property
     def gradP(self, zThresh : float = 1e-8) -> Tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
