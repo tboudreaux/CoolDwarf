@@ -42,6 +42,7 @@ class KramerOpac:
         """
         self.X = X
         self.Z = Z
+        print(self.X, self.Z, "Kramer Opac Composition")
 
     def kappa(self, temp: float, density: float) -> float:
         """

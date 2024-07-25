@@ -1,0 +1,1 @@
+from .opac import OPALHighTempOpacity
