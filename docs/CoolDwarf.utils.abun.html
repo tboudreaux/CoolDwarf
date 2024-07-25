@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>CoolDwarf.utils.abun package &#8212; CoolDwarf  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="cooldwarf-utils-abun-package">
+<h1>CoolDwarf.utils.abun package<a class="headerlink" href="#cooldwarf-utils-abun-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.abun.include.html">CoolDwarf.utils.abun.include package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.utils.abun.include.html#module-CoolDwarf.utils.abun.include">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CoolDwarf.utils.abun.include.html#CoolDwarf.utils.abun.include.get_abundance_map_path"><code class="docutils literal notranslate"><span class="pre">get_abundance_map_path()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-CoolDwarf.utils.abun.parse">
+<span id="cooldwarf-utils-abun-parse-module"></span><h2>CoolDwarf.utils.abun.parse module<a class="headerlink" href="#module-CoolDwarf.utils.abun.parse" title="Link to this heading">¶</a></h2>
+<p><strong>Author:</strong> Emily M. Boudreaux</p>
+<p><strong>Created:</strong> May 2021</p>
+<p><strong>Last Modified:</strong> July 2024</p>
+<p>Module responsible for the parsing and handeling of chemical composition files
+in the form of</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#STD [Fe/H] [alpha/Fe] [C/Fe] [N/Fe] [O/Fe] [r/Fe] [s/Fe] C/O X Y,Z</span>
+<span class="n">F</span> <span class="o">-</span><span class="mf">1.13</span> <span class="mf">0.32</span> <span class="o">-</span><span class="mf">0.43</span> <span class="o">-</span><span class="mf">0.28</span> <span class="mf">0.31</span> <span class="o">-</span><span class="mf">1.13</span> <span class="o">-</span><span class="mf">1.13</span> <span class="mf">0.10</span> <span class="mf">0.7584</span> <span class="mf">0.2400</span><span class="p">,</span><span class="mf">1.599E-03</span>
+<span class="c1">#H He Li Be B C N O F Ne</span>
+<span class="mf">12.00</span> <span class="mf">10.898</span> <span class="o">-</span><span class="mf">0.08</span> <span class="mf">0.25</span> <span class="mf">1.57</span> <span class="mf">6.87</span> <span class="mf">6.42</span> <span class="mf">7.87</span> <span class="mf">3.43</span> <span class="mf">7.12</span>
+<span class="c1">#Na Mg Al Si P S Cl Ar K Ca</span>
+<span class="mf">5.11</span> <span class="mf">6.86</span> <span class="mf">5.21</span> <span class="mf">6.65</span> <span class="mf">4.28</span> <span class="mf">6.31</span> <span class="o">-</span><span class="mf">1.13</span> <span class="mf">5.59</span> <span class="mf">3.90</span> <span class="mf">5.21</span>
+<span class="c1">#Sc Ti V Cr Mn Fe Co Ni Cu Zn</span>
+<span class="mf">2.02</span> <span class="mf">3.82</span> <span class="mf">2.80</span> <span class="mf">4.51</span> <span class="mf">4.30</span> <span class="mf">6.37</span> <span class="mf">3.86</span> <span class="mf">5.09</span> <span class="mf">3.06</span> <span class="mf">2.30</span>
+<span class="c1">#Ga Ge As Se Br Kr Rb Sr Y Zr</span>
+<span class="mf">0.78</span> <span class="mf">1.39</span> <span class="mf">0.04</span> <span class="mf">1.08</span> <span class="mf">0.28</span> <span class="mf">0.99</span> <span class="mf">0.26</span> <span class="mf">0.61</span> <span class="mf">1.08</span> <span class="mf">1.45</span>
+<span class="c1">#Nb Mo Tc Ru Rh Pd Ag Cd In Sn</span>
+<span class="o">-</span><span class="mf">0.80</span> <span class="o">-</span><span class="mf">0.38</span> <span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">0.51</span> <span class="o">-</span><span class="mf">1.35</span> <span class="o">-</span><span class="mf">0.69</span> <span class="o">-</span><span class="mf">1.32</span> <span class="o">-</span><span class="mf">0.55</span> <span class="o">-</span><span class="mf">1.46</span> <span class="o">-</span><span class="mf">0.22</span>
+<span class="c1">#Sb Te I Xe Cs Ba La Ce Pr Nd</span>
+<span class="o">-</span><span class="mf">1.25</span> <span class="o">-</span><span class="mf">0.08</span> <span class="o">-</span><span class="mf">0.71</span> <span class="o">-</span><span class="mf">0.02</span> <span class="o">-</span><span class="mf">1.18</span> <span class="mf">1.05</span> <span class="o">-</span><span class="mf">0.03</span> <span class="mf">0.45</span> <span class="o">-</span><span class="mf">1.54</span> <span class="mf">0.29</span>
+<span class="c1">#Pm Sm Eu Gd Tb Dy Ho Er Tm Yb</span>
+<span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">1.30</span> <span class="o">-</span><span class="mf">0.61</span> <span class="o">-</span><span class="mf">1.19</span> <span class="o">-</span><span class="mf">1.96</span> <span class="o">-</span><span class="mf">1.16</span> <span class="o">-</span><span class="mf">1.78</span> <span class="o">-</span><span class="mf">1.34</span> <span class="o">-</span><span class="mf">2.16</span> <span class="o">-</span><span class="mf">1.42</span>
+<span class="c1">#Lu Hf Ta W Re Os Ir Pt Au Hg</span>
+<span class="o">-</span><span class="mf">2.16</span> <span class="o">-</span><span class="mf">1.41</span> <span class="o">-</span><span class="mf">2.38</span> <span class="o">-</span><span class="mf">1.41</span> <span class="o">-</span><span class="mf">2.00</span> <span class="o">-</span><span class="mf">0.86</span> <span class="o">-</span><span class="mf">0.88</span> <span class="o">-</span><span class="mf">0.64</span> <span class="o">-</span><span class="mf">1.34</span> <span class="o">-</span><span class="mf">1.09</span>
+<span class="c1">#Tl Pb Bi Po At Rn Fr Ra Ac Th</span>
+<span class="o">-</span><span class="mf">1.36</span> <span class="o">-</span><span class="mf">0.51</span> <span class="o">-</span><span class="mf">1.61</span> <span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">2.20</span>
+<span class="c1">#Pa U</span>
+<span class="o">-</span><span class="mf">99.00</span> <span class="o">-</span><span class="mf">2.80</span>
+</pre></div>
+</div>
+<p>Where each number is a(i) for the ith element and lines starting with # are
+comments.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.parse.chem_to_mass_frac">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.parse.</span></span><span class="sig-name descname"><span class="pre">chem_to_mass_frac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#CoolDwarf.utils.abun.parse.chem_to_mass_frac" title="Link to this definition">¶</a></dt>
+<dd><p>Convert <span class="math notranslate nohighlight">\(a(i)\)</span> for the <span class="math notranslate nohighlight">\(i^{th}\)</span> element to a mass fraction using the expression</p>
+<div class="math notranslate nohighlight">
+\[a(i) = \log(1.008) + \log(F_{i}) - \left[\log(X) + \log(m_{i})\right] + 12\]</div>
+<p>Or, equivilenetly, to go from <span class="math notranslate nohighlight">\(a(i)\)</span> to mass fraction</p>
+<div class="math notranslate nohighlight">
+\[F_{i} = \left[\frac{X m_{i}}{1.008}\right]\times 10^{a(i)-12}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(F_{i}\)</span> is the math fraction of the <span class="math notranslate nohighlight">\(i^{th}\)</span> element,
+<span class="math notranslate nohighlight">\(X\)</span> is the Hydrogen mass fraction, and <span class="math notranslate nohighlight">\(m_{i}\)</span> is the ith
+element mass in hydrogen masses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>chem</strong><span class="classifier">float</span></dt><dd><p><span class="math notranslate nohighlight">\(a(i)\)</span> for the <span class="math notranslate nohighlight">\(i^{th}\)</span> element. For example for He chem might
+be 10.93. For Hydrogen it would definititionally be 12.</p>
+</dd>
+<dt><strong>mass</strong><span class="classifier">float</span></dt><dd><p>Mass of <span class="math notranslate nohighlight">\(i^{th}\)</span> element given in atomic mass units.</p>
+</dd>
+<dt><strong>X</strong><span class="classifier">float</span></dt><dd><p>Hydrogen mass fraction</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mf</strong><span class="classifier">float</span></dt><dd><p>Mass fraction of <span class="math notranslate nohighlight">\(i^{th}\)</span> element.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.parse.open_and_parse">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.parse.</span></span><span class="sig-name descname"><span class="pre">open_and_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.abun.parse.open_and_parse" title="Link to this definition">¶</a></dt>
+<dd><p>Open and parse the contents of a chemical composition file</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Path to open file</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>parsed</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with two indexes.</p>
+<blockquote>
+<div><ul>
+<li><dl>
+<dt>Abundance Ratio</dt><dd><p>Includes the indexes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>STD (<em>str</em>)</p></li>
+<li><p>[Fe/H] (<em>float</em>)</p></li>
+<li><p>[alpha/Fe] (<em>float</em>)</p></li>
+<li><p>[C/Fe] (<em>float</em>)</p></li>
+<li><p>[N/Fe] (<em>float</em>)</p></li>
+<li><p>[O/Fe] (<em>float</em>)</p></li>
+<li><p>[r/Fe] (<em>float</em>)</p></li>
+<li><p>[s/Fe] (<em>float</em>)</p></li>
+<li><p>C/O (<em>float</em>)</p></li>
+<li><p>X (<em>float</em>)</p></li>
+<li><p>Y (<em>float</em>)</p></li>
+<li><p>Z (<em>float</em>)</p></li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>RelativeAbundance</dt><dd><p>Includes an index for each chemical symbol given in the
+file format definition provided in the module
+documentation. These are all floats.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.parse.open_chm_file">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.parse.</span></span><span class="sig-name descname"><span class="pre">open_chm_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.abun.parse.open_chm_file" title="Link to this definition">¶</a></dt>
+<dd><p>Open a chemical composition file (format defined in the module
+documentation). Split the contents by line then remove all lines which
+start with #. Finally split each line by both whitespace and commas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Path to file to open</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>contents</strong><span class="classifier">list</span></dt><dd><p>List of list of strings. The outter index selects the row, the
+inner index selectes the column within the row.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.parse.parse">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.parse.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contents</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#CoolDwarf.utils.abun.parse.parse" title="Link to this definition">¶</a></dt>
+<dd><p>Parse chem file in the format described in the module documentation.</p>
+<p>The abuundance ratios and abundances on the first row are added to a dict
+under the key [‘AbundanceRatio’] and sub indexed by the comments above each
+entry (Note that these are not read; rather, they are assumed to be the
+same in every file). The subsequent values (on all other rows) are added to
+the same dict under the key [‘RelativeAbundance’] and sub indexed by their
+chemical symbols.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>contents</strong><span class="classifier">list</span></dt><dd><p>List of list of strings. The outter index selects the row, the
+inner index selected the column in the row and at each coordinate
+is a string which can be cast as a float. The one exception is that
+string at 0,0 is a charectar.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>extracted</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with two indexes.</p>
+<blockquote>
+<div><ul>
+<li><dl>
+<dt>Abundance Ratio</dt><dd><p>Includes the indexes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>STD (<em>str</em>)</p></li>
+<li><p>[Fe/H] (<em>float</em>)</p></li>
+<li><p>[alpha/Fe] (<em>float</em>)</p></li>
+<li><p>[C/Fe] (<em>float</em>)</p></li>
+<li><p>[N/Fe] (<em>float</em>)</p></li>
+<li><p>[O/Fe] (<em>float</em>)</p></li>
+<li><p>[r/Fe] (<em>float</em>)</p></li>
+<li><p>[s/Fe] (<em>float</em>)</p></li>
+<li><p>C/O (<em>float</em>)</p></li>
+<li><p>X (<em>float</em>)</p></li>
+<li><p>Y (<em>float</em>)</p></li>
+<li><p>Z (<em>float</em>)</p></li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>RelativeAbundance</dt><dd><p>Includes an index for each chemical symbol given in the
+file format from the module documentation. These are all
+floats.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-CoolDwarf.utils.abun.utils">
+<span id="cooldwarf-utils-abun-utils-module"></span><h2>CoolDwarf.utils.abun.utils module<a class="headerlink" href="#module-CoolDwarf.utils.abun.utils" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.utils.a_to_mfrac">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.utils.</span></span><span class="sig-name descname"><span class="pre">a_to_mfrac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.abun.utils.a_to_mfrac" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a for the ith element to the mass fraction of the ith element using
+the equation:</p>
+<div class="math notranslate nohighlight">
+\[F_{i} = \left[\frac{Xm_{i}}{1.008}\right]\times 10^{a(i)-12}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(F_{i}\)</span> is the mass fraction for the <span class="math notranslate nohighlight">\(i^{th}\)</span> element and
+<span class="math notranslate nohighlight">\(m_{i}\)</span> is the mass fraction for the <span class="math notranslate nohighlight">\(i^{th}\)</span> element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>a</strong><span class="classifier">float</span></dt><dd><p>a for the ith element</p>
+</dd>
+<dt><strong>amass</strong><span class="classifier">float</span></dt><dd><p>Mass of the ith element in atomic mass units.</p>
+</dd>
+<dt><strong>X</strong><span class="classifier">float</span></dt><dd><p>Hydrogen mass fraction</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mfrac</strong><span class="classifier">float</span></dt><dd><p>mass fraction for the ith element</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.utils.est_feh_from_Z_and_X">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.utils.</span></span><span class="sig-name descname"><span class="pre">est_feh_from_Z_and_X</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abunTable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Xt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Zt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#CoolDwarf.utils.abun.utils.est_feh_from_Z_and_X" title="Link to this definition">¶</a></dt>
+<dd><p>Analytically estimate feh from Z and X</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>abunTable</strong><span class="classifier">dict</span></dt><dd><p>Abundance Table dictionary in the form described in the docs for
+pysep.misc.abun.util.open_and_parse.</p>
+</dd>
+<dt><strong>Xt</strong><span class="classifier">float</span></dt><dd><p>Target X to move to</p>
+</dd>
+<dt><strong>Zt</strong><span class="classifier">float</span></dt><dd><p>Target Z to move to.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>FeH</strong><span class="classifier">float</span></dt><dd><p>[Fe/H] value to add to every a(i) for every tracked element i where
+i &gt; 2 (i.e all the metals).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.utils.gen_abun_map">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.utils.</span></span><span class="sig-name descname"><span class="pre">gen_abun_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">abunTable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.abun.utils.gen_abun_map" title="Link to this definition">¶</a></dt>
+<dd><p>Generate an analytic mapping between X, Y, Z and FeH given an abundance
+table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>abunTable</strong><span class="classifier">str</span></dt><dd><p>Path of checmical abundance table to use for composition. Format of
+this table is defined in the ext module documentation.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>MetalAbunMap</strong><span class="classifier">function(X,Y,Z) -&gt; (Fe/H,0.0,a(He))</span></dt><dd><p>Function build from interpolation of a grid of FeH, alpha/Fe, and
+a(He) which will returned the set of those values giving the
+composition most similar to an input X, Y, and Z.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.utils.get_atomic_masses">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.utils.</span></span><span class="sig-name descname"><span class="pre">get_atomic_masses</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.abun.utils.get_atomic_masses" title="Link to this definition">¶</a></dt>
+<dd><p>Return a dict of atomic masses from Hydrogen all the way to plutonium</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>amasses</strong><span class="classifier">dict of floats</span></dt><dd><p>Dicionary of atomic masses in atomic mass units indexed by elemental
+symbol.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.utils.mfrac_to_a">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.utils.</span></span><span class="sig-name descname"><span class="pre">mfrac_to_a</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mfrac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.abun.utils.mfrac_to_a" title="Link to this definition">¶</a></dt>
+<dd><p>Convert mass fracition of a given element to a for that element at a given
+hydrogen mass fraction using the equation</p>
+<div class="math notranslate nohighlight">
+\[a(i) = \log(1.008) + \log(F_{i}) - \left[\log(X) + \log(m_{i}) \right]\]</div>
+<p>Where <span class="math notranslate nohighlight">\(F_{i}\)</span> is the mass fraction for the <span class="math notranslate nohighlight">\(i^{th}\)</span> element and
+<span class="math notranslate nohighlight">\(m_{i}\)</span> is the mass fraction for the <span class="math notranslate nohighlight">\(i^{th}\)</span> element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mfrac</strong><span class="classifier">float</span></dt><dd><p>Mass fraction of the ith element.</p>
+</dd>
+<dt><strong>amass</strong><span class="classifier">float</span></dt><dd><p>Mass of the ith element in atomic mass units.</p>
+</dd>
+<dt><strong>X</strong><span class="classifier">float</span></dt><dd><p>Hydrogen mass fraction</p>
+</dd>
+<dt><strong>Y</strong><span class="classifier">float</span></dt><dd><p>Helium mass fraction, will be used as reference if X = 0</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>a</strong><span class="classifier">float</span></dt><dd><p>a for the ith element</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CoolDwarf.utils.abun.utils.parse_abundance_map">
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.abun.utils.</span></span><span class="sig-name descname"><span class="pre">parse_abundance_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#CoolDwarf.utils.abun.utils.parse_abundance_map" title="Link to this definition">¶</a></dt>
+<dd><p>Parse Hydroge, Helium, and metal mass fraction out of a csv where each row
+is one composition, the first column is X, second is Y, and the third is Z.
+Comments may be included in the file if the first non white space charectar
+on the line is a hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pContents</strong><span class="classifier">np.ndarray(shape=(n,3))</span></dt><dd><p>numpy array of all the compositions of length n where n is the
+number of rows whos first non white space charectar was not a hash.
+For a dsep n=126. Along the second axis the first column is X, the
+second is Y, and the third is Z.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-CoolDwarf.utils.abun">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-CoolDwarf.utils.abun" title="Link to this heading">¶</a></h2>
+<p>Chemical abundance tables which might be needed.</p>
+<section id="avalible-aubundance-tables">
+<h3>Avalible Aubundance Tables<a class="headerlink" href="#avalible-aubundance-tables" title="Link to this heading">¶</a></h3>
+<blockquote>
+<div><dl class="simple">
+<dt>GS98.abun</dt><dd><p>[1] Grevesse, N. and Sauval, A.J., 1998. Standard solar composition. Space Science Reviews, 85(1), pp.161-174.</p>
+</dd>
+<dt>AGSS09.abun</dt><dd><p>[1] Asplund, M., Grevesse, N., Sauval, A.J. and Scott, P., 2009. The chemical composition of the Sun. Annual review of astronomy and astrophysics, 47, pp.481-522.</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CoolDwarf</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.invert.html">CoolDwarf.EOS.invert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.html">CoolDwarf.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.model.mesa.html">CoolDwarf.model.mesa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.opac.html">CoolDwarf.opac</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.utils.misc.html">CoolDwarf.utils.misc</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Emily M. Boudreaux.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/CoolDwarf.utils.abun.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

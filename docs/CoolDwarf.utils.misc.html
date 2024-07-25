@@ -102,12 +102,18 @@ If deemed appropriate, the record may be modified in-place.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="CoolDwarf.utils.misc.logging.setup_logging">
-<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.misc.logging.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.misc.logging.setup_logging" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">CoolDwarf.utils.misc.logging.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'CoolDwarf.log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evolName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'CoolDwarf.evolve'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clearFiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.utils.misc.logging.setup_logging" title="Link to this definition">¶</a></dt>
 <dd><p>This function is used to set up the logging configuration for CoolDwarf.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>debug</strong><span class="classifier">bool, default=False</span></dt><dd><p>If True, sets the logging level to DEBUG. Otherwise, sets the logging level to INFO.</p>
+</dd>
+<dt><strong>logName</strong><span class="classifier">str, default=”CoolDwarf.log”</span></dt><dd><p>The name of the log file.</p>
+</dd>
+<dt><strong>evolName</strong><span class="classifier">str, default=”CoolDwarf.evolve”</span></dt><dd><p>The name of the evolve log file.</p>
+</dd>
+<dt><strong>clearFiles</strong><span class="classifier">bool, default=True</span></dt><dd><p>If True, clears the log files before writing to them. Otherwise, appends to the log files.</p>
 </dd>
 </dl>
 </dd>
@@ -361,7 +367,11 @@ If deemed appropriate, the record may be modified in-place.</p>
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="CoolDwarf.html">CoolDwarf</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="CoolDwarf.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CoolDwarf.html#module-CoolDwarf">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.star.html">CoolDwarf.star</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.html">CoolDwarf.EOS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoolDwarf.EOS.invert.html">CoolDwarf.EOS.invert</a></li>

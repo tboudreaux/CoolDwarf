@@ -40,7 +40,7 @@
 <span id="cooldwarf-star-atmo-atmo-module"></span><h2>CoolDwarf.star.atmo.atmo module<a class="headerlink" href="#module-CoolDwarf.star.atmo.atmo" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.star.atmo.atmo.</span></span><span class="sig-name descname"><span class="pre">AdiabaticIdealAtmosphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="CoolDwarf.star.html#CoolDwarf.star.sphere.VoxelSphere" title="CoolDwarf.star.sphere.VoxelSphere"><span class="pre">VoxelSphere</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialResolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuthalResolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitudinalResolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'maxEChange':</span> <span class="pre">0.0001,</span> <span class="pre">'relax':</span> <span class="pre">1e-06,</span> <span class="pre">'volCheck':</span> <span class="pre">0.01}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CoolDwarf.star.atmo.atmo.</span></span><span class="sig-name descname"><span class="pre">AdiabaticIdealAtmosphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="CoolDwarf.star.html#CoolDwarf.star.sphere.VoxelSphere" title="CoolDwarf.star.sphere.VoxelSphere"><span class="pre">VoxelSphere</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">opac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radialResolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuthalResolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitudinalResolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'maxEChange':</span> <span class="pre">0.0001,</span> <span class="pre">'relax':</span> <span class="pre">1e-06,</span> <span class="pre">'volCheck':</span> <span class="pre">0.01}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Attributes<span class="colon">:</span></dt>
@@ -50,6 +50,8 @@
 <dt><strong>geostrophic_wind_velocity_field</strong></dt><dd></dd>
 <dt><strong>gradP</strong></dt><dd></dd>
 <dt><strong>k</strong></dt><dd></dd>
+<dt><a class="reference internal" href="#CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.lapT" title="CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.lapT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lapT</span></code></a></dt><dd><p>Find the laplacian of the temperature field.</p>
+</dd>
 <dt><strong>pressure</strong></dt><dd></dd>
 <dt><strong>temperature</strong></dt><dd></dd>
 </dl>
@@ -80,13 +82,19 @@
 <tr class="row-even"><td><p><strong>diffusive_loss</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>pressure_profile</strong></p></td>
+<tr class="row-odd"><td><p><strong>inject_energy</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>radiative_loss</strong></p></td>
+<tr class="row-even"><td><p><strong>pressure_profile</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>temperature_profile</strong></p></td>
+<tr class="row-odd"><td><p><strong>radiative_loss</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>temperature_profile</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>timestep</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -172,10 +180,37 @@ if true then the gradient is computed as:</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.inject_energy">
+<span class="sig-name descname"><span class="pre">inject_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.inject_energy" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.k">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">k</span></span><a class="headerlink" href="#CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.k" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.lapT">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lapT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.lapT" title="Link to this definition">¶</a></dt>
+<dd><p>Find the laplacian of the temperature field. This is
+simply a wrapper around 2nd order gradient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>corr</strong><span class="classifier">bool, default=True</span></dt><dd><p>If True, the laplacian is computed in spherical coordinates.
+If False, the laplacian is computed in cartesian coordinates.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>lapT</strong><span class="classifier">NDArray[np.float64]</span></dt><dd><p>The laplacian of the temperature field.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.pressure">
@@ -200,6 +235,11 @@ if true then the gradient is computed as:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.temperature_profile">
 <span class="sig-name descname"><span class="pre">temperature_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.temperature_profile" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.timestep">
+<span class="sig-name descname"><span class="pre">timestep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CoolDwarf.star.atmo.atmo.AdiabaticIdealAtmosphere.timestep" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
