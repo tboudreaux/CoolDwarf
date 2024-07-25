@@ -1,3 +1,20 @@
+## 1.1.0 (2024-07-25)
+
+### Feat
+
+- **star/atmo**: added major features to atmo, including radiative attenuation
+- **utils/interp**: added bilinear and linear interpolation methods
+- **opac/set**: added a class to ramp between ferg05 and opal opacities when moving from high to low opacities
+- **ferg05**: added ferguson 2005 low temperature opacities
+- **opal**: added opal high temp opacity tables and interpolation routines for them
+- **atmo.py**: added temperature update code to the atmospher based on the advective, diffusive, and radiative losses over some timestep dt
+- **src**: started adding atmospheric model
+
+### Refactor
+
+- **CoolDwarf**: general changes including adding new constants and docs updates
+- **opac**: cleaned up unused files
+
 ## 1.0.0 (2024-06-15)
 
 ### BREAKING CHANGE
