@@ -40,6 +40,8 @@ class OPALHighTempOpacity:
 
         self.temps = np.array(self.temps)
         self.logRs = np.array(self.logRs)
+        self._tempBounds = (self.temps.min(), self.temps.max())
+        self._logRBounds = (self.logRs.min(), self.logRs.max())
 
         opacTables = self.parse()
         self.opacTable, self.interpF = self.interpolate(opacTables)
@@ -79,13 +81,32 @@ class OPALHighTempOpacity:
         return tables
 
     def kappa(self, temp, density, log=False):
+        temp, density = xp.array(temp), xp.array(density)
         targetR = density * (temp/1e6)**3
         targetLogR = np.log10(targetR)
         targetLogT = np.log10(temp)
+        if xp.any(targetLogT < self._tempBounds[0]):
+            self._logger.warning(f"Temperature out of bounds (below) (HTO): Bounds = {self._tempBounds[0]} K - {self._tempBounds[1]} K")
+            self.interpF.bounds_error = False
+            self.interpF.fill_value = -1
+        if xp.any(targetLogT > self._tempBounds[1]):
+            self._logger.warning(f"Temperature out of bounds (above) (HTO): Bounds = {self._tempBounds[0]} K - {self._tempBounds[1]} K")
+            self.interpF.bounds_error = False
+            self.interpF.fill_value = None
+        if xp.any(targetLogR < self._logRBounds[0]):
+            self._logger.warning(f"logR out of bounds (below) (HTO): log R Bounds = {self._logRBounds[0]} - {self._logRBounds[1]}")
+            self.interpF.bounds_error = False
+            self.interpF.fill_value = -1
+        if xp.any(targetLogR > self._logRBounds[1]):
+            self._logger.warning(f"logR out of bounds (above) (HTO): log R Bounds = {self._logRBounds[0]} - {self._logRBounds[1]}")
+            self.interpF.bounds_error = False
+            self.interpF.fill_value = None
         logKappa = self.kappaLogRT(xp.array([targetLogT]), xp.array([targetLogR]))
+        self.interpF.bounds_error = True
+        self.interpF.fill_value = xp.nan
         if not log:
-            return 10**logKappa
-        return logKappa
+            return xp.reshape(10**logKappa, temp.shape)
+        return xp.reshape(logKappa, temp.shape)
 
     def kappaLogRT(self, logT, logR):
         return self.interpF((logR, logT))

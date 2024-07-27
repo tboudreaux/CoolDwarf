@@ -64,6 +64,8 @@ class Ferg05Opacity():
 
         opacTables = self.parse()
         self.opacTable, self.interpF = self.interpolate(opacTables)
+        self._tempBounds = (self.temps.min(), self.temps.max())
+        self._logRBounds = (self.logRs.min(), self.logRs.max())
 
     def parse(self):
         files = pkg.files(include)
@@ -99,13 +101,35 @@ class Ferg05Opacity():
         return opacTables
 
     def kappa(self, temp, density, log=False):
+        temp, density = xp.array(temp), xp.array(density)
         targetR = density * (temp/1e6)**3
         targetLogR = np.log10(targetR)
         targetLogT = np.log10(temp)
+        if xp.any(targetLogT < self._tempBounds[0]):
+            self._logger.warning(f"Temperature out of bounds (below) (LTO): Bounds = {self._tempBounds[0]} K - {self._tempBounds[1]} K")
+            self.interpF.bounds_error = False
+            self.interpF.fill_value = -1
+        if xp.any(targetLogT > self._tempBounds[1]):
+            self._logger.warning(f"Temperature out of bounds (above) (LTO): Bounds = {self._tempBounds[0]} K - {self._tempBounds[1]} K")
+            self.interpF.bounds_error = False
+            self.interpF.fill_value = None
+        if xp.any(targetLogR < self._logRBounds[0]):
+            self._logger.warning(f"logR out of bounds (below) (LTO): log R Bounds = {self._logRBounds[0]} - {self._logRBounds[1]}")
+            self.interpF.bounds_error = False
+            self.interpF.fill_value = -1
+        if xp.any(targetLogR > self._logRBounds[1]):
+            self._logger.warning(f"logR out of bounds (above) (LTO): log R Bounds = {self._logRBounds[0]} - {self._logRBounds[1]}")
+            self.interpF.bounds_error = False
+            self.interpF.fill_value = None
         logKappa = self.kappaLogRT(xp.array([targetLogT]), xp.array([targetLogR]))
+        self.interpF.bounds_error = True
+        self.interpF.fill_value = xp.nan
         if not log:
-            return 10**logKappa
-        return logKappa
+            return xp.reshape(10**logKappa, temp.shape)
+        return xp.reshape(logKappa, temp.shape)
+
+    def check_bounds(self, temp, density, log=False):
+        ...
 
     def kappaLogRT(self, logT, logR):
         return self.interpF((logR, logT))
@@ -135,7 +159,7 @@ class Ferg05Opacity():
                 dataframes[(x1, z2)],
                 dataframes[(x2, z2)]
                 )
-        interpF = RegularGridInterpolator((self.logRs, self.temps), table.T, method='linear')
+        interpF = RegularGridInterpolator((self.logRs, self.temps), table.T, method='linear', bounds_error=False, fill_value=None)
         return table, interpF
 
 if __name__ == "__main__":

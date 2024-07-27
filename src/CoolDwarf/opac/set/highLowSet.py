@@ -14,14 +14,51 @@ class OpacitySet:
             checkTemp = xp.log10(temp)
         else:
             checkTemp = temp
-        if checkTemp < self.boundary[0]:
-            return self.low.kappa(temp, density, log=log)
-        elif checkTemp > self.boundary[1]:
-            return self.high.kappa(temp, density, log=log)
-        else:
-            fh = (4/3) * (temp - self.boundary[0])
-            fl = 1 - fh
-            assert fh + fl == 1, "Ramp Error! fh + fl != 1. This probably means the temp being passed into the opacity set is log logged right"
+        checkTemp = checkTemp.flatten()
+        # linear ramp to scale between low and high opacity tables
+        # the ramp is such that at logT = 3.75 the full weight is
+        # given to the low temp opac tables and then it scales linearly
+        # from logT = 3.75 to logT = 4.5 such that by log T = 4.5
+        # the full weight is given to the high temp opac tables.
+        fh = (4/3) * (checkTemp - self.boundary[0])
+        fl = 1 - fh
 
-            return fl * self.low.kappa(temp, density) + fh * self.high.kappa(temp, density)
+        if isinstance(temp, float) and isinstance(density, float):
+            if checkTemp < self.boundary[0]:
+                return self.low.kappa(temp, density, log=log)
+            elif checkTemp > self.boundary[1]:
+                return self.high.kappa(temp, density, log=log)
+            else:
+                return fl * self.low.kappa(temp, density) + fh * self.high.kappa(temp, density)
+        elif isinstance(temp, xp.ndarray) and isinstance(density, xp.ndarray):
+            lowTInRange = temp[checkTemp < self.boundary[0]]
+            lowDInRange = density[checkTemp < self.boundary[0]]
+            highTInRange = temp[checkTemp > self.boundary[1]]
+            highDInRange = density[checkTemp > self.boundary[1]]
+            midTRange = temp[(checkTemp >= self.boundary[0]) & (checkTemp <= self.boundary[1])]
+            midDRange = density[(checkTemp >= self.boundary[0]) & (checkTemp <= self.boundary[1])]
+            # linear ramp to scale between low and high opacity tables
+            # the ramp is such that at logT = 3.75 the full weight is
+            # given to the low temp opac tables and then it scales linearly
+            # from logT = 3.75 to logT = 4.5 such that by log T = 4.5
+            # the full weight is given to the high temp opac tables.
+            fh = (4/3) * (checkTemp - self.boundary[0])
+            fl = 1 - fh
+            fh = fh[(checkTemp >= self.boundary[0]) & (checkTemp <= self.boundary[1])]
+            fl = fl[(checkTemp >= self.boundary[0]) & (checkTemp <= self.boundary[1])]
+
+            fh = xp.reshape(fh, midTRange.shape)
+            fl = xp.reshape(fl, midTRange.shape)
+
+            lowTempOpac = self.low.kappa(lowTInRange, lowDInRange)
+            highTempOpac = self.high.kappa(highTInRange, highDInRange)
+            midTempOpac = fl * self.low.kappa(midTRange, midDRange) + fh * self.high.kappa(midTRange, midDRange)
+            outOpac = xp.zeros_like(temp)
+            outOpac[checkTemp < self.boundary[0]] = lowTempOpac
+            outOpac[checkTemp > self.boundary[1]] = highTempOpac
+            outOpac[(checkTemp >= self.boundary[0]) & (checkTemp <= self.boundary[1])] = midTempOpac
+            
+            return outOpac
+        else:
+            raise TypeError("Input density and/or temperature type is not supported (both float or both ndarrays)")
 
